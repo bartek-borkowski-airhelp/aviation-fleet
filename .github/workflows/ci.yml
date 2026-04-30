@@ -97,3 +97,24 @@ jobs:
         run: |
           bundle exec rake rswag:specs:swaggerize
           git diff --exit-code swagger/ || (echo "OpenAPI spec is out of date. Run 'rake rswag:specs:swaggerize' and commit the result." && exit 1)
+
+  notify_sdk:
+    runs-on: ubuntu-latest
+    needs: [ scan_ruby, lint, test ]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    steps:
+      - name: Generate GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+          owner: bartek-borkowski-airhelp
+          repositories: aviation-fleet-ts-sdk
+
+      - name: Dispatch openapi-schema-updated event
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          repository: bartek-borkowski-airhelp/aviation-fleet-ts-sdk
+          event-type: openapi-schema-updated

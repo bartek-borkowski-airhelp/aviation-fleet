@@ -67,9 +67,9 @@ RSpec.describe 'Aircraft Variants', type: :request do
       security [ { basicAuth: [] } ]
       produces 'application/json'
       parameter name: :body_type, in: :query, type: :string, required: false,
-                enum: %w[narrowbody widebody regional_jet], description: 'Filter by body type'
+                enum: %w[narrowbody widebody regional_jet biplane], description: 'Filter by body type'
       parameter name: :engine_type, in: :query, type: :string, required: false,
-                enum: %w[turbofan turboprop piston], description: 'Filter by engine type'
+                enum: %w[turbofan turboprop piston propeller], description: 'Filter by engine type'
       parameter name: :range_category, in: :query, type: :string, required: false,
                 enum: %w[short medium long], description: 'Filter by range category'
       parameter name: :min_range_km, in: :query, type: :integer, required: false,

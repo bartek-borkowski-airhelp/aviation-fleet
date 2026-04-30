@@ -171,8 +171,9 @@ paths:
         - narrowbody
         - widebody
         - regional_jet
+        - biplane
         description: "Filter by body type:\n * `narrowbody` \n * `widebody` \n * `regional_jet`
-          \n "
+          \n * `biplane` \n "
         schema:
           type: string
       - name: engine_type
@@ -182,6 +183,7 @@ paths:
         - turbofan
         - turboprop
         - piston
+        - propeller
         description: Filter by engine type
         schema:
           type: string
@@ -759,12 +761,14 @@ components:
           - turbofan
           - turboprop
           - piston
+          - propeller
         body_type:
           type: string
           enum:
           - narrowbody
           - widebody
           - regional_jet
+          - biplane
         range_category:
           type: string
           enum:
@@ -822,12 +826,14 @@ components:
               - turbofan
               - turboprop
               - piston
+              - propeller
             body_type:
               type: string
               enum:
               - narrowbody
               - widebody
               - regional_jet
+              - biplane
             range_category:
               type: string
               enum:

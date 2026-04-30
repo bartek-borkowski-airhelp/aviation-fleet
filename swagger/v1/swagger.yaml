@@ -607,6 +607,8 @@ paths:
       responses:
         '204':
           description: manufacturer deleted
+security:
+- basicAuth: []
 servers:
 - url: "{protocol}://{host}"
   variables:
@@ -906,3 +908,7 @@ components:
       properties:
         errors:
           type: object
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic

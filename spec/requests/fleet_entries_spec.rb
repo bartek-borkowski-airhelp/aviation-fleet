@@ -1,6 +1,8 @@
 require 'swagger_helper'
 
 RSpec.describe 'Fleet Entries', type: :request do
+  let(:Authorization) { ActionController::HttpAuthentication::Basic.encode_credentials(ENV.fetch("API_USERNAME", "admin"), ENV.fetch("API_PASSWORD", "password")) }
+
   let!(:manufacturer_record) { Manufacturer.create!(name: 'Boeing', country: 'USA') }
   let!(:family_record) { AircraftFamily.create!(name: '737', manufacturer: manufacturer_record) }
   let!(:variant_record) do
@@ -19,6 +21,7 @@ RSpec.describe 'Fleet Entries', type: :request do
 
     post 'Add a variant to fleet' do
       tags 'Fleet Entries'
+      security [{ basicAuth: [] }]
       consumes 'application/json'
       produces 'application/json'
       parameter name: :fleet_entry, in: :body, schema: { '$ref' => '#/components/schemas/FleetEntryInput' }
@@ -53,6 +56,7 @@ RSpec.describe 'Fleet Entries', type: :request do
 
     put 'Update a fleet entry' do
       tags 'Fleet Entries'
+      security [{ basicAuth: [] }]
       consumes 'application/json'
       produces 'application/json'
       parameter name: :fleet_entry, in: :body, schema: { '$ref' => '#/components/schemas/FleetEntryInput' }
@@ -78,6 +82,7 @@ RSpec.describe 'Fleet Entries', type: :request do
 
     delete 'Remove a fleet entry' do
       tags 'Fleet Entries'
+      security [{ basicAuth: [] }]
 
       response '204', 'fleet entry deleted' do
         let(:airline_id) { airline_record.id }
@@ -93,6 +98,7 @@ RSpec.describe 'Fleet Entries', type: :request do
 
     post 'Phase out a fleet entry' do
       tags 'Fleet Entries'
+      security [{ basicAuth: [] }]
       produces 'application/json'
 
       response '200', 'fleet entry phased out' do

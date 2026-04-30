@@ -1,6 +1,8 @@
 require 'swagger_helper'
 
 RSpec.describe 'Aircraft Variants', type: :request do
+  let(:Authorization) { ActionController::HttpAuthentication::Basic.encode_credentials(ENV.fetch("API_USERNAME", "admin"), ENV.fetch("API_PASSWORD", "password")) }
+
   let!(:manufacturer_record) { Manufacturer.create!(name: 'Boeing', country: 'USA') }
   let!(:family_record) { AircraftFamily.create!(name: '737', manufacturer: manufacturer_record) }
 
@@ -22,6 +24,7 @@ RSpec.describe 'Aircraft Variants', type: :request do
 
     get 'List variants for a family' do
       tags 'Aircraft Variants'
+      security [{ basicAuth: [] }]
       produces 'application/json'
 
       response '200', 'variants found' do
@@ -35,6 +38,7 @@ RSpec.describe 'Aircraft Variants', type: :request do
 
     post 'Create a variant under a family' do
       tags 'Aircraft Variants'
+      security [{ basicAuth: [] }]
       consumes 'application/json'
       produces 'application/json'
       parameter name: :aircraft_variant, in: :body, schema: { '$ref' => '#/components/schemas/AircraftVariantInput' }
@@ -60,6 +64,7 @@ RSpec.describe 'Aircraft Variants', type: :request do
   path '/variants' do
     get 'Search variants' do
       tags 'Aircraft Variants'
+      security [{ basicAuth: [] }]
       produces 'application/json'
       parameter name: :body_type, in: :query, type: :string, required: false,
                 enum: %w[narrowbody widebody regional_jet], description: 'Filter by body type'
@@ -88,6 +93,7 @@ RSpec.describe 'Aircraft Variants', type: :request do
 
     get 'Retrieve a variant' do
       tags 'Aircraft Variants'
+      security [{ basicAuth: [] }]
       produces 'application/json'
 
       response '200', 'variant found' do
@@ -105,6 +111,7 @@ RSpec.describe 'Aircraft Variants', type: :request do
 
     put 'Update a variant' do
       tags 'Aircraft Variants'
+      security [{ basicAuth: [] }]
       consumes 'application/json'
       produces 'application/json'
       parameter name: :aircraft_variant, in: :body, schema: { '$ref' => '#/components/schemas/AircraftVariantInput' }
@@ -128,6 +135,7 @@ RSpec.describe 'Aircraft Variants', type: :request do
 
     delete 'Delete a variant' do
       tags 'Aircraft Variants'
+      security [{ basicAuth: [] }]
 
       response '204', 'variant deleted' do
         let(:id) { create_variant.id }
@@ -141,6 +149,7 @@ RSpec.describe 'Aircraft Variants', type: :request do
 
     post 'Discontinue a variant' do
       tags 'Aircraft Variants'
+      security [{ basicAuth: [] }]
       produces 'application/json'
 
       response '200', 'variant discontinued' do
@@ -157,6 +166,7 @@ RSpec.describe 'Aircraft Variants', type: :request do
 
     get 'List airlines operating this variant' do
       tags 'Aircraft Variants'
+      security [{ basicAuth: [] }]
       produces 'application/json'
 
       response '200', 'operators found' do

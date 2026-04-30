@@ -1,6 +1,8 @@
 require 'swagger_helper'
 
 RSpec.describe 'Aircraft Families', type: :request do
+  let(:Authorization) { ActionController::HttpAuthentication::Basic.encode_credentials(ENV.fetch("API_USERNAME", "admin"), ENV.fetch("API_PASSWORD", "password")) }
+
   let!(:manufacturer_record) { Manufacturer.create!(name: 'Boeing', country: 'USA') }
 
   path '/manufacturers/{manufacturer_id}/families' do
@@ -8,6 +10,7 @@ RSpec.describe 'Aircraft Families', type: :request do
 
     get 'List families for a manufacturer' do
       tags 'Aircraft Families'
+      security [{ basicAuth: [] }]
       produces 'application/json'
 
       response '200', 'families found' do
@@ -21,6 +24,7 @@ RSpec.describe 'Aircraft Families', type: :request do
 
     post 'Create a family under a manufacturer' do
       tags 'Aircraft Families'
+      security [{ basicAuth: [] }]
       consumes 'application/json'
       produces 'application/json'
       parameter name: :aircraft_family, in: :body, schema: { '$ref' => '#/components/schemas/AircraftFamilyInput' }
@@ -48,6 +52,7 @@ RSpec.describe 'Aircraft Families', type: :request do
 
     get 'Retrieve a family' do
       tags 'Aircraft Families'
+      security [{ basicAuth: [] }]
       produces 'application/json'
 
       response '200', 'family found' do
@@ -65,6 +70,7 @@ RSpec.describe 'Aircraft Families', type: :request do
 
     put 'Update a family' do
       tags 'Aircraft Families'
+      security [{ basicAuth: [] }]
       consumes 'application/json'
       produces 'application/json'
       parameter name: :aircraft_family, in: :body, schema: { '$ref' => '#/components/schemas/AircraftFamilyInput' }
@@ -88,6 +94,7 @@ RSpec.describe 'Aircraft Families', type: :request do
 
     delete 'Delete a family' do
       tags 'Aircraft Families'
+      security [{ basicAuth: [] }]
 
       response '204', 'family deleted' do
         let(:id) { AircraftFamily.create!(name: '737', manufacturer: manufacturer_record).id }

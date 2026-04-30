@@ -2,3 +2,4 @@
 !/log/.keep
 /tmp/
 /storage/*.sqlite3
+.env

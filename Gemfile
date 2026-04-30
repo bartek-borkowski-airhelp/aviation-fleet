@@ -35,6 +35,10 @@ gem "image_processing", "~> 1.2"
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin Ajax possible
 # gem "rack-cors"
 
+# API documentation with rswag
+gem "rswag-api"
+gem "rswag-ui"
+
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
@@ -51,8 +55,6 @@ group :development, :test do
   # RSpec testing framework
   gem "rspec-rails"
 
-  # API documentation and testing with rswag
-  gem "rswag-api"
-  gem "rswag-ui"
+  # Rswag spec helpers
   gem "rswag-specs"
 end

@@ -21,7 +21,7 @@ RSpec.describe 'Fleet Entries', type: :request do
 
     post 'Add a variant to fleet' do
       tags 'Fleet Entries'
-      security [{ basicAuth: [] }]
+      security [ { basicAuth: [] } ]
       consumes 'application/json'
       produces 'application/json'
       parameter name: :fleet_entry, in: :body, schema: { '$ref' => '#/components/schemas/FleetEntryInput' }
@@ -56,7 +56,7 @@ RSpec.describe 'Fleet Entries', type: :request do
 
     put 'Update a fleet entry' do
       tags 'Fleet Entries'
-      security [{ basicAuth: [] }]
+      security [ { basicAuth: [] } ]
       consumes 'application/json'
       produces 'application/json'
       parameter name: :fleet_entry, in: :body, schema: { '$ref' => '#/components/schemas/FleetEntryInput' }
@@ -82,7 +82,7 @@ RSpec.describe 'Fleet Entries', type: :request do
 
     delete 'Remove a fleet entry' do
       tags 'Fleet Entries'
-      security [{ basicAuth: [] }]
+      security [ { basicAuth: [] } ]
 
       response '204', 'fleet entry deleted' do
         let(:airline_id) { airline_record.id }
@@ -98,7 +98,7 @@ RSpec.describe 'Fleet Entries', type: :request do
 
     post 'Phase out a fleet entry' do
       tags 'Fleet Entries'
-      security [{ basicAuth: [] }]
+      security [ { basicAuth: [] } ]
       produces 'application/json'
 
       response '200', 'fleet entry phased out' do

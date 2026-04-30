@@ -6,7 +6,7 @@ RSpec.describe 'Manufacturers', type: :request do
   path '/manufacturers' do
     get 'List manufacturers' do
       tags 'Manufacturers'
-      security [{ basicAuth: [] }]
+      security [ { basicAuth: [] } ]
       produces 'application/json'
       parameter name: :country, in: :query, type: :string, required: false, description: 'Filter by country'
 
@@ -20,7 +20,7 @@ RSpec.describe 'Manufacturers', type: :request do
 
     post 'Create a manufacturer' do
       tags 'Manufacturers'
-      security [{ basicAuth: [] }]
+      security [ { basicAuth: [] } ]
       consumes 'application/json'
       produces 'application/json'
       parameter name: :manufacturer, in: :body, schema: { '$ref' => '#/components/schemas/ManufacturerInput' }
@@ -46,7 +46,7 @@ RSpec.describe 'Manufacturers', type: :request do
 
     get 'Retrieve a manufacturer' do
       tags 'Manufacturers'
-      security [{ basicAuth: [] }]
+      security [ { basicAuth: [] } ]
       produces 'application/json'
 
       response '200', 'manufacturer found' do
@@ -64,7 +64,7 @@ RSpec.describe 'Manufacturers', type: :request do
 
     put 'Update a manufacturer' do
       tags 'Manufacturers'
-      security [{ basicAuth: [] }]
+      security [ { basicAuth: [] } ]
       consumes 'application/json'
       produces 'application/json'
       parameter name: :manufacturer, in: :body, schema: { '$ref' => '#/components/schemas/ManufacturerInput' }
@@ -88,7 +88,7 @@ RSpec.describe 'Manufacturers', type: :request do
 
     delete 'Delete a manufacturer' do
       tags 'Manufacturers'
-      security [{ basicAuth: [] }]
+      security [ { basicAuth: [] } ]
 
       response '204', 'manufacturer deleted' do
         let(:id) { Manufacturer.create!(name: 'Boeing', country: 'USA').id }

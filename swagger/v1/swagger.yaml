@@ -1,0 +1,908 @@
+---
+openapi: 3.0.1
+info:
+  title: Aviation Fleet API
+  version: v1
+  description: API for managing aircraft manufacturers, families, variants, airlines,
+    and fleet entries
+paths:
+  "/manufacturers/{manufacturer_id}/families":
+    parameters:
+    - name: manufacturer_id
+      in: path
+      required: true
+      schema:
+        type: integer
+    get:
+      summary: List families for a manufacturer
+      tags:
+      - Aircraft Families
+      responses:
+        '200':
+          description: families found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/AircraftFamily"
+    post:
+      summary: Create a family under a manufacturer
+      tags:
+      - Aircraft Families
+      parameters: []
+      responses:
+        '201':
+          description: family created
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/AircraftFamily"
+        '422':
+          description: invalid request
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Errors"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/AircraftFamilyInput"
+  "/families/{id}":
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+    get:
+      summary: Retrieve a family
+      tags:
+      - Aircraft Families
+      responses:
+        '200':
+          description: family found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/AircraftFamily"
+        '404':
+          description: family not found
+    put:
+      summary: Update a family
+      tags:
+      - Aircraft Families
+      parameters: []
+      responses:
+        '200':
+          description: family updated
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/AircraftFamily"
+        '422':
+          description: invalid request
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Errors"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/AircraftFamilyInput"
+    delete:
+      summary: Delete a family
+      tags:
+      - Aircraft Families
+      responses:
+        '204':
+          description: family deleted
+  "/families/{family_id}/variants":
+    parameters:
+    - name: family_id
+      in: path
+      required: true
+      schema:
+        type: integer
+    get:
+      summary: List variants for a family
+      tags:
+      - Aircraft Variants
+      responses:
+        '200':
+          description: variants found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/AircraftVariant"
+    post:
+      summary: Create a variant under a family
+      tags:
+      - Aircraft Variants
+      parameters: []
+      responses:
+        '201':
+          description: variant created
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/AircraftVariant"
+        '422':
+          description: invalid request
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Errors"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/AircraftVariantInput"
+  "/variants":
+    get:
+      summary: Search variants
+      tags:
+      - Aircraft Variants
+      parameters:
+      - name: body_type
+        in: query
+        required: false
+        enum:
+        - narrowbody
+        - widebody
+        - regional_jet
+        description: "Filter by body type:\n * `narrowbody` \n * `widebody` \n * `regional_jet`
+          \n "
+        schema:
+          type: string
+      - name: engine_type
+        in: query
+        required: false
+        enum:
+        - turbofan
+        - turboprop
+        - piston
+        description: Filter by engine type
+        schema:
+          type: string
+      - name: range_category
+        in: query
+        required: false
+        enum:
+        - short
+        - medium
+        - long
+        description: Filter by range category
+        schema:
+          type: string
+      - name: min_range_km
+        in: query
+        required: false
+        description: Minimum range in km
+        schema:
+          type: integer
+      - name: max_passengers
+        in: query
+        required: false
+        description: Minimum passenger capacity
+        schema:
+          type: integer
+      - name: status
+        in: query
+        required: false
+        enum:
+        - active
+        - discontinued
+        - in_development
+        description: Filter by status
+        schema:
+          type: string
+      responses:
+        '200':
+          description: variants found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/AircraftVariant"
+  "/variants/{id}":
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+    get:
+      summary: Retrieve a variant
+      tags:
+      - Aircraft Variants
+      responses:
+        '200':
+          description: variant found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/AircraftVariant"
+        '404':
+          description: variant not found
+    put:
+      summary: Update a variant
+      tags:
+      - Aircraft Variants
+      parameters: []
+      responses:
+        '200':
+          description: variant updated
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/AircraftVariant"
+        '422':
+          description: invalid request
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Errors"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/AircraftVariantInput"
+    delete:
+      summary: Delete a variant
+      tags:
+      - Aircraft Variants
+      responses:
+        '204':
+          description: variant deleted
+  "/variants/{id}/discontinue":
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+    post:
+      summary: Discontinue a variant
+      tags:
+      - Aircraft Variants
+      responses:
+        '200':
+          description: variant discontinued
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/AircraftVariant"
+  "/variants/{id}/operators":
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+    get:
+      summary: List airlines operating this variant
+      tags:
+      - Aircraft Variants
+      responses:
+        '200':
+          description: operators found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/Airline"
+  "/airlines":
+    get:
+      summary: List airlines
+      tags:
+      - Airlines
+      parameters:
+      - name: country
+        in: query
+        required: false
+        description: Filter by country
+        schema:
+          type: string
+      - name: iata_code
+        in: query
+        required: false
+        description: Filter by IATA code
+        schema:
+          type: string
+      responses:
+        '200':
+          description: airlines found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/Airline"
+    post:
+      summary: Create an airline
+      tags:
+      - Airlines
+      parameters: []
+      responses:
+        '201':
+          description: airline created
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Airline"
+        '422':
+          description: invalid request
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Errors"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/AirlineInput"
+  "/airlines/{id}":
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+    get:
+      summary: Retrieve an airline
+      tags:
+      - Airlines
+      responses:
+        '200':
+          description: airline found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Airline"
+        '404':
+          description: airline not found
+    put:
+      summary: Update an airline
+      tags:
+      - Airlines
+      parameters: []
+      responses:
+        '200':
+          description: airline updated
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Airline"
+        '422':
+          description: invalid request
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Errors"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/AirlineInput"
+    delete:
+      summary: Delete an airline
+      tags:
+      - Airlines
+      responses:
+        '204':
+          description: airline deleted
+  "/airlines/{id}/fleet":
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+    get:
+      summary: List fleet entries for an airline
+      tags:
+      - Airlines
+      responses:
+        '200':
+          description: fleet entries found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/FleetEntry"
+  "/airlines/{airline_id}/fleet":
+    parameters:
+    - name: airline_id
+      in: path
+      required: true
+      schema:
+        type: integer
+    post:
+      summary: Add a variant to fleet
+      tags:
+      - Fleet Entries
+      parameters: []
+      responses:
+        '201':
+          description: fleet entry created
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/FleetEntry"
+        '422':
+          description: invalid request
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Errors"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/FleetEntryInput"
+  "/airlines/{airline_id}/fleet/{id}":
+    parameters:
+    - name: airline_id
+      in: path
+      required: true
+      schema:
+        type: integer
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+    put:
+      summary: Update a fleet entry
+      tags:
+      - Fleet Entries
+      parameters: []
+      responses:
+        '200':
+          description: fleet entry updated
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/FleetEntry"
+        '422':
+          description: invalid request
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Errors"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/FleetEntryInput"
+    delete:
+      summary: Remove a fleet entry
+      tags:
+      - Fleet Entries
+      responses:
+        '204':
+          description: fleet entry deleted
+  "/airlines/{airline_id}/fleet/{id}/phase-out":
+    parameters:
+    - name: airline_id
+      in: path
+      required: true
+      schema:
+        type: integer
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+    post:
+      summary: Phase out a fleet entry
+      tags:
+      - Fleet Entries
+      responses:
+        '200':
+          description: fleet entry phased out
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/FleetEntry"
+  "/manufacturers":
+    get:
+      summary: List manufacturers
+      tags:
+      - Manufacturers
+      parameters:
+      - name: country
+        in: query
+        required: false
+        description: Filter by country
+        schema:
+          type: string
+      responses:
+        '200':
+          description: manufacturers found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/Manufacturer"
+    post:
+      summary: Create a manufacturer
+      tags:
+      - Manufacturers
+      parameters: []
+      responses:
+        '201':
+          description: manufacturer created
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Manufacturer"
+        '422':
+          description: invalid request
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Errors"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/ManufacturerInput"
+  "/manufacturers/{id}":
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+    get:
+      summary: Retrieve a manufacturer
+      tags:
+      - Manufacturers
+      responses:
+        '200':
+          description: manufacturer found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Manufacturer"
+        '404':
+          description: manufacturer not found
+    put:
+      summary: Update a manufacturer
+      tags:
+      - Manufacturers
+      parameters: []
+      responses:
+        '200':
+          description: manufacturer updated
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Manufacturer"
+        '422':
+          description: invalid request
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Errors"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/ManufacturerInput"
+    delete:
+      summary: Delete a manufacturer
+      tags:
+      - Manufacturers
+      responses:
+        '204':
+          description: manufacturer deleted
+servers:
+- url: "{protocol}://{host}"
+  variables:
+    protocol:
+      default: http
+      enum:
+      - http
+      - https
+    host:
+      default: localhost:3000
+components:
+  schemas:
+    Manufacturer:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        country:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      required:
+      - id
+      - name
+      - country
+    ManufacturerInput:
+      type: object
+      properties:
+        manufacturer:
+          type: object
+          properties:
+            name:
+              type: string
+            country:
+              type: string
+          required:
+          - name
+          - country
+      required:
+      - manufacturer
+    AircraftFamily:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        manufacturer_id:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      required:
+      - id
+      - name
+      - manufacturer_id
+    AircraftFamilyInput:
+      type: object
+      properties:
+        aircraft_family:
+          type: object
+          properties:
+            name:
+              type: string
+          required:
+          - name
+      required:
+      - aircraft_family
+    AircraftVariant:
+      type: object
+      properties:
+        id:
+          type: integer
+        aircraft_family_id:
+          type: integer
+        name:
+          type: string
+        iata_code:
+          type: string
+        engine_type:
+          type: string
+          enum:
+          - turbofan
+          - turboprop
+          - piston
+        body_type:
+          type: string
+          enum:
+          - narrowbody
+          - widebody
+          - regional_jet
+        range_category:
+          type: string
+          enum:
+          - short
+          - medium
+          - long
+        range_km:
+          type: integer
+        max_passengers:
+          type: integer
+        max_cargo_tonnes:
+          type: number
+          format: float
+          nullable: true
+        entry_into_service:
+          type: string
+          format: date
+          nullable: true
+        status:
+          type: string
+          enum:
+          - active
+          - discontinued
+          - in_development
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      required:
+      - id
+      - aircraft_family_id
+      - name
+      - iata_code
+      - engine_type
+      - body_type
+      - range_category
+      - range_km
+      - max_passengers
+      - status
+    AircraftVariantInput:
+      type: object
+      properties:
+        aircraft_variant:
+          type: object
+          properties:
+            name:
+              type: string
+            iata_code:
+              type: string
+            engine_type:
+              type: string
+              enum:
+              - turbofan
+              - turboprop
+              - piston
+            body_type:
+              type: string
+              enum:
+              - narrowbody
+              - widebody
+              - regional_jet
+            range_category:
+              type: string
+              enum:
+              - short
+              - medium
+              - long
+            range_km:
+              type: integer
+            max_passengers:
+              type: integer
+            max_cargo_tonnes:
+              type: number
+              format: float
+            entry_into_service:
+              type: string
+              format: date
+            status:
+              type: string
+              enum:
+              - active
+              - discontinued
+              - in_development
+          required:
+          - name
+          - iata_code
+          - engine_type
+          - body_type
+          - range_category
+          - range_km
+          - max_passengers
+          - status
+      required:
+      - aircraft_variant
+    Airline:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        iata_code:
+          type: string
+        country:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      required:
+      - id
+      - name
+      - iata_code
+      - country
+    AirlineInput:
+      type: object
+      properties:
+        airline:
+          type: object
+          properties:
+            name:
+              type: string
+            iata_code:
+              type: string
+            country:
+              type: string
+          required:
+          - name
+          - iata_code
+          - country
+      required:
+      - airline
+    FleetEntry:
+      type: object
+      properties:
+        id:
+          type: integer
+        airline_id:
+          type: integer
+        aircraft_variant_id:
+          type: integer
+        fleet_count:
+          type: integer
+        avg_age_years:
+          type: number
+          format: float
+          nullable: true
+        status:
+          type: string
+          enum:
+          - active
+          - phasing_out
+          - ordered
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      required:
+      - id
+      - airline_id
+      - aircraft_variant_id
+      - fleet_count
+      - status
+    FleetEntryInput:
+      type: object
+      properties:
+        fleet_entry:
+          type: object
+          properties:
+            aircraft_variant_id:
+              type: integer
+            fleet_count:
+              type: integer
+            avg_age_years:
+              type: number
+              format: float
+            status:
+              type: string
+              enum:
+              - active
+              - phasing_out
+              - ordered
+          required:
+          - aircraft_variant_id
+          - fleet_count
+          - status
+      required:
+      - fleet_entry
+    Errors:
+      type: object
+      properties:
+        errors:
+          type: object

@@ -1,0 +1,891 @@
+  [1m[35m (0.2ms)[0m  [1m[35mCREATE TABLE "schema_migrations" ("version" varchar NOT NULL PRIMARY KEY)[0m
+  [1m[35m (0.1ms)[0m  [1m[35mCREATE TABLE "ar_internal_metadata" ("key" varchar NOT NULL PRIMARY KEY, "value" varchar, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL)[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.1ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = ? ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1[0m  [[nil, "environment"]]
+  [1m[36mActiveRecord::InternalMetadata Create (0.1ms)[0m  [1m[32mINSERT INTO "ar_internal_metadata" ("key", "value", "created_at", "updated_at") VALUES ('environment', 'test', '2026-04-30 07:57:49.358353', '2026-04-30 07:57:49.358354') RETURNING "key"[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.0ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+Migrating to CreateManufacturers (20260430075258)
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN immediate TRANSACTION[0m
+  [1m[35m (0.1ms)[0m  [1m[35mCREATE TABLE "manufacturers" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "name" varchar, "country" varchar, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL)[0m
+  [1m[36mActiveRecord::SchemaMigration Create (0.0ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES ('20260430075258') RETURNING "version"[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mCOMMIT TRANSACTION[0m
+Migrating to CreateAircraftFamilies (20260430075334)
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN immediate TRANSACTION[0m
+  [1m[35m (0.1ms)[0m  [1m[35mCREATE TABLE "aircraft_families" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "name" varchar, "manufacturer_id" integer NOT NULL, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_13313ebc2b"
+FOREIGN KEY ("manufacturer_id")
+  REFERENCES "manufacturers" ("id")
+)[0m
+  [1m[35m (0.1ms)[0m  [1m[35mCREATE INDEX "index_aircraft_families_on_manufacturer_id" ON "aircraft_families" ("manufacturer_id")[0m
+  [1m[36mActiveRecord::SchemaMigration Create (0.0ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES ('20260430075334') RETURNING "version"[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mCOMMIT TRANSACTION[0m
+Migrating to CreateAircraftVariants (20260430075351)
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN immediate TRANSACTION[0m
+  [1m[35m (0.1ms)[0m  [1m[35mCREATE TABLE "aircraft_variants" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "name" varchar, "iata_code" varchar, "engine_type" varchar, "body_type" varchar, "range_category" varchar, "range_km" integer, "max_passengers" integer, "max_cargo_tonnes" float, "entry_into_service" date, "status" varchar, "aircraft_family_id" integer NOT NULL, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_81fc6e7d79"
+FOREIGN KEY ("aircraft_family_id")
+  REFERENCES "aircraft_families" ("id")
+)[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE INDEX "index_aircraft_variants_on_aircraft_family_id" ON "aircraft_variants" ("aircraft_family_id")[0m
+  [1m[36mActiveRecord::SchemaMigration Create (0.0ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES ('20260430075351') RETURNING "version"[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mCOMMIT TRANSACTION[0m
+Migrating to CreateAirlines (20260430075406)
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN immediate TRANSACTION[0m
+  [1m[35m (0.1ms)[0m  [1m[35mCREATE TABLE "airlines" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "name" varchar, "iata_code" varchar, "country" varchar, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL)[0m
+  [1m[36mActiveRecord::SchemaMigration Create (0.0ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES ('20260430075406') RETURNING "version"[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mCOMMIT TRANSACTION[0m
+Migrating to CreateFleetEntries (20260430075422)
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN immediate TRANSACTION[0m
+  [1m[35m (0.2ms)[0m  [1m[35mCREATE TABLE "fleet_entries" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "airline_id" integer NOT NULL, "aircraft_variant_id" integer NOT NULL, "fleet_count" integer, "avg_age_years" float, "status" varchar, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_a8d1d1b664"
+FOREIGN KEY ("airline_id")
+  REFERENCES "airlines" ("id")
+, CONSTRAINT "fk_rails_fba5e76b11"
+FOREIGN KEY ("aircraft_variant_id")
+  REFERENCES "aircraft_variants" ("id")
+)[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE INDEX "index_fleet_entries_on_airline_id" ON "fleet_entries" ("airline_id")[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE INDEX "index_fleet_entries_on_aircraft_variant_id" ON "fleet_entries" ("aircraft_variant_id")[0m
+  [1m[36mActiveRecord::SchemaMigration Create (0.0ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES ('20260430075422') RETURNING "version"[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mCOMMIT TRANSACTION[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.0ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.3ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = ? ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1[0m  [[nil, "schema_sha1"]]
+  [1m[36mActiveRecord::SchemaMigration Load (0.1ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.1ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = ? ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1[0m  [[nil, "environment"]]
+  [1m[36mActiveRecord::SchemaMigration Load (0.0ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.0ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = ? ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1[0m  [[nil, "environment"]]
+  [1m[36mActiveRecord::SchemaMigration Load (0.0ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.0ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = ? ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1[0m  [[nil, "environment"]]
+  [1m[35m (0.3ms)[0m  [1m[35mDROP TABLE IF EXISTS "aircraft_families"[0m
+  [1m[35m (0.2ms)[0m  [1m[35mCREATE TABLE "aircraft_families" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "created_at" datetime(6) NOT NULL, "manufacturer_id" integer NOT NULL, "name" varchar, "updated_at" datetime(6) NOT NULL)[0m
+  [1m[35m (0.1ms)[0m  [1m[35mCREATE INDEX "index_aircraft_families_on_manufacturer_id" ON "aircraft_families" ("manufacturer_id")[0m
+  [1m[35m (0.0ms)[0m  [1m[35mDROP TABLE IF EXISTS "aircraft_variants"[0m
+  [1m[35m (0.1ms)[0m  [1m[35mCREATE TABLE "aircraft_variants" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "aircraft_family_id" integer NOT NULL, "body_type" varchar, "created_at" datetime(6) NOT NULL, "engine_type" varchar, "entry_into_service" date, "iata_code" varchar, "max_cargo_tonnes" float, "max_passengers" integer, "name" varchar, "range_category" varchar, "range_km" integer, "status" varchar, "updated_at" datetime(6) NOT NULL)[0m
+  [1m[35m (0.1ms)[0m  [1m[35mCREATE INDEX "index_aircraft_variants_on_aircraft_family_id" ON "aircraft_variants" ("aircraft_family_id")[0m
+  [1m[35m (0.0ms)[0m  [1m[35mDROP TABLE IF EXISTS "airlines"[0m
+  [1m[35m (0.1ms)[0m  [1m[35mCREATE TABLE "airlines" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "country" varchar, "created_at" datetime(6) NOT NULL, "iata_code" varchar, "name" varchar, "updated_at" datetime(6) NOT NULL)[0m
+  [1m[35m (0.0ms)[0m  [1m[35mDROP TABLE IF EXISTS "fleet_entries"[0m
+  [1m[35m (0.1ms)[0m  [1m[35mCREATE TABLE "fleet_entries" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "aircraft_variant_id" integer NOT NULL, "airline_id" integer NOT NULL, "avg_age_years" float, "created_at" datetime(6) NOT NULL, "fleet_count" integer, "status" varchar, "updated_at" datetime(6) NOT NULL)[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE INDEX "index_fleet_entries_on_aircraft_variant_id" ON "fleet_entries" ("aircraft_variant_id")[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE INDEX "index_fleet_entries_on_airline_id" ON "fleet_entries" ("airline_id")[0m
+  [1m[35m (0.0ms)[0m  [1m[35mDROP TABLE IF EXISTS "manufacturers"[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE TABLE "manufacturers" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "country" varchar, "created_at" datetime(6) NOT NULL, "name" varchar, "updated_at" datetime(6) NOT NULL)[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA foreign_keys[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA defer_foreign_keys[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA defer_foreign_keys = ON[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA foreign_keys = OFF[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN immediate TRANSACTION[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE TEMPORARY TABLE "aaircraft_families" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "created_at" datetime(6) NOT NULL, "manufacturer_id" integer NOT NULL, "name" varchar, "updated_at" datetime(6) NOT NULL)[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE INDEX "tindex_aaircraft_families_on_manufacturer_id" ON "aaircraft_families" ("manufacturer_id")[0m
+  [1m[35mSQL (0.0ms)[0m  [1m[32mINSERT INTO "aaircraft_families" ("id","created_at","manufacturer_id","name","updated_at")
+                     SELECT "id","created_at","manufacturer_id","name","updated_at" FROM "aircraft_families"[0m
+  [1m[35m (0.0ms)[0m  [1m[35mDROP TABLE "aircraft_families"[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE TABLE "aircraft_families" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "created_at" datetime(6) NOT NULL, "manufacturer_id" integer NOT NULL, "name" varchar, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_13313ebc2b"
+FOREIGN KEY ("manufacturer_id")
+  REFERENCES "manufacturers" ("id")
+)[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE INDEX "index_aircraft_families_on_manufacturer_id" ON "aircraft_families" ("manufacturer_id")[0m
+  [1m[35mSQL (0.0ms)[0m  [1m[32mINSERT INTO "aircraft_families" ("id","created_at","manufacturer_id","name","updated_at")
+                     SELECT "id","created_at","manufacturer_id","name","updated_at" FROM "aaircraft_families"[0m
+  [1m[35m (0.0ms)[0m  [1m[35mDROP TABLE "aaircraft_families"[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mCOMMIT TRANSACTION[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA defer_foreign_keys = 0[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA foreign_keys = 1[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA foreign_keys[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA defer_foreign_keys[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA defer_foreign_keys = ON[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA foreign_keys = OFF[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN immediate TRANSACTION[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE TEMPORARY TABLE "aaircraft_variants" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "aircraft_family_id" integer NOT NULL, "body_type" varchar, "created_at" datetime(6) NOT NULL, "engine_type" varchar, "entry_into_service" date, "iata_code" varchar, "max_cargo_tonnes" float, "max_passengers" integer, "name" varchar, "range_category" varchar, "range_km" integer, "status" varchar, "updated_at" datetime(6) NOT NULL)[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE INDEX "tindex_aaircraft_variants_on_aircraft_family_id" ON "aaircraft_variants" ("aircraft_family_id")[0m
+  [1m[35mSQL (0.0ms)[0m  [1m[32mINSERT INTO "aaircraft_variants" ("id","aircraft_family_id","body_type","created_at","engine_type","entry_into_service","iata_code","max_cargo_tonnes","max_passengers","name","range_category","range_km","status","updated_at")
+                     SELECT "id","aircraft_family_id","body_type","created_at","engine_type","entry_into_service","iata_code","max_cargo_tonnes","max_passengers","name","range_category","range_km","status","updated_at" FROM "aircraft_variants"[0m
+  [1m[35m (0.0ms)[0m  [1m[35mDROP TABLE "aircraft_variants"[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE TABLE "aircraft_variants" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "aircraft_family_id" integer NOT NULL, "body_type" varchar, "created_at" datetime(6) NOT NULL, "engine_type" varchar, "entry_into_service" date, "iata_code" varchar, "max_cargo_tonnes" float, "max_passengers" integer, "name" varchar, "range_category" varchar, "range_km" integer, "status" varchar, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_81fc6e7d79"
+FOREIGN KEY ("aircraft_family_id")
+  REFERENCES "aircraft_families" ("id")
+)[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE INDEX "index_aircraft_variants_on_aircraft_family_id" ON "aircraft_variants" ("aircraft_family_id")[0m
+  [1m[35mSQL (0.0ms)[0m  [1m[32mINSERT INTO "aircraft_variants" ("id","aircraft_family_id","body_type","created_at","engine_type","entry_into_service","iata_code","max_cargo_tonnes","max_passengers","name","range_category","range_km","status","updated_at")
+                     SELECT "id","aircraft_family_id","body_type","created_at","engine_type","entry_into_service","iata_code","max_cargo_tonnes","max_passengers","name","range_category","range_km","status","updated_at" FROM "aaircraft_variants"[0m
+  [1m[35m (0.1ms)[0m  [1m[35mDROP TABLE "aaircraft_variants"[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mCOMMIT TRANSACTION[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA defer_foreign_keys = 0[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA foreign_keys = 1[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA foreign_keys[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA defer_foreign_keys[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA defer_foreign_keys = ON[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA foreign_keys = OFF[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN immediate TRANSACTION[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE TEMPORARY TABLE "afleet_entries" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "aircraft_variant_id" integer NOT NULL, "airline_id" integer NOT NULL, "avg_age_years" float, "created_at" datetime(6) NOT NULL, "fleet_count" integer, "status" varchar, "updated_at" datetime(6) NOT NULL)[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE INDEX "tindex_afleet_entries_on_airline_id" ON "afleet_entries" ("airline_id")[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE INDEX "tindex_afleet_entries_on_aircraft_variant_id" ON "afleet_entries" ("aircraft_variant_id")[0m
+  [1m[35mSQL (0.0ms)[0m  [1m[32mINSERT INTO "afleet_entries" ("id","aircraft_variant_id","airline_id","avg_age_years","created_at","fleet_count","status","updated_at")
+                     SELECT "id","aircraft_variant_id","airline_id","avg_age_years","created_at","fleet_count","status","updated_at" FROM "fleet_entries"[0m
+  [1m[35m (0.0ms)[0m  [1m[35mDROP TABLE "fleet_entries"[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE TABLE "fleet_entries" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "aircraft_variant_id" integer NOT NULL, "airline_id" integer NOT NULL, "avg_age_years" float, "created_at" datetime(6) NOT NULL, "fleet_count" integer, "status" varchar, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_fba5e76b11"
+FOREIGN KEY ("aircraft_variant_id")
+  REFERENCES "aircraft_variants" ("id")
+)[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE INDEX "index_fleet_entries_on_aircraft_variant_id" ON "fleet_entries" ("aircraft_variant_id")[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE INDEX "index_fleet_entries_on_airline_id" ON "fleet_entries" ("airline_id")[0m
+  [1m[35mSQL (0.0ms)[0m  [1m[32mINSERT INTO "fleet_entries" ("id","aircraft_variant_id","airline_id","avg_age_years","created_at","fleet_count","status","updated_at")
+                     SELECT "id","aircraft_variant_id","airline_id","avg_age_years","created_at","fleet_count","status","updated_at" FROM "afleet_entries"[0m
+  [1m[35m (0.0ms)[0m  [1m[35mDROP TABLE "afleet_entries"[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mCOMMIT TRANSACTION[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA defer_foreign_keys = 0[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA foreign_keys = 1[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA foreign_keys[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA defer_foreign_keys[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA defer_foreign_keys = ON[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA foreign_keys = OFF[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN immediate TRANSACTION[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE TEMPORARY TABLE "afleet_entries" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "aircraft_variant_id" integer NOT NULL, "airline_id" integer NOT NULL, "avg_age_years" float, "created_at" datetime(6) NOT NULL, "fleet_count" integer, "status" varchar, "updated_at" datetime(6) NOT NULL)[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE INDEX "tindex_afleet_entries_on_airline_id" ON "afleet_entries" ("airline_id")[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE INDEX "tindex_afleet_entries_on_aircraft_variant_id" ON "afleet_entries" ("aircraft_variant_id")[0m
+  [1m[35mSQL (0.0ms)[0m  [1m[32mINSERT INTO "afleet_entries" ("id","aircraft_variant_id","airline_id","avg_age_years","created_at","fleet_count","status","updated_at")
+                     SELECT "id","aircraft_variant_id","airline_id","avg_age_years","created_at","fleet_count","status","updated_at" FROM "fleet_entries"[0m
+  [1m[35m (0.0ms)[0m  [1m[35mDROP TABLE "fleet_entries"[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE TABLE "fleet_entries" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "aircraft_variant_id" integer NOT NULL, "airline_id" integer NOT NULL, "avg_age_years" float, "created_at" datetime(6) NOT NULL, "fleet_count" integer, "status" varchar, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_fba5e76b11"
+FOREIGN KEY ("aircraft_variant_id")
+  REFERENCES "aircraft_variants" ("id")
+, CONSTRAINT "fk_rails_a8d1d1b664"
+FOREIGN KEY ("airline_id")
+  REFERENCES "airlines" ("id")
+)[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE INDEX "index_fleet_entries_on_aircraft_variant_id" ON "fleet_entries" ("aircraft_variant_id")[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE INDEX "index_fleet_entries_on_airline_id" ON "fleet_entries" ("airline_id")[0m
+  [1m[35mSQL (0.0ms)[0m  [1m[32mINSERT INTO "fleet_entries" ("id","aircraft_variant_id","airline_id","avg_age_years","created_at","fleet_count","status","updated_at")
+                     SELECT "id","aircraft_variant_id","airline_id","avg_age_years","created_at","fleet_count","status","updated_at" FROM "afleet_entries"[0m
+  [1m[35m (0.0ms)[0m  [1m[35mDROP TABLE "afleet_entries"[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mCOMMIT TRANSACTION[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA defer_foreign_keys = 0[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA foreign_keys = 1[0m
+  [1m[35m (0.1ms)[0m  [1m[35mCREATE TABLE "schema_migrations" ("version" varchar NOT NULL PRIMARY KEY)[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.0ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  [1m[35m (0.0ms)[0m  [1m[32mINSERT INTO "schema_migrations" (version) VALUES (20260430075422)[0m
+  [1m[35m (0.0ms)[0m  [1m[32mINSERT INTO "schema_migrations" (version) VALUES
+(20260430075406),
+(20260430075351),
+(20260430075334),
+(20260430075258);[0m
+  [1m[35m (0.1ms)[0m  [1m[35mCREATE TABLE "ar_internal_metadata" ("key" varchar NOT NULL PRIMARY KEY, "value" varchar, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL)[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.0ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = ? ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1[0m  [[nil, "environment"]]
+  [1m[36mActiveRecord::InternalMetadata Create (0.0ms)[0m  [1m[32mINSERT INTO "ar_internal_metadata" ("key", "value", "created_at", "updated_at") VALUES ('environment', 'test', '2026-04-30 08:00:45.031165', '2026-04-30 08:00:45.031166') RETURNING "key"[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.0ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = ? ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1[0m  [[nil, "environment"]]
+  [1m[36mActiveRecord::InternalMetadata Load (0.0ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = ? ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1[0m  [[nil, "schema_sha1"]]
+  [1m[36mActiveRecord::InternalMetadata Create (0.0ms)[0m  [1m[32mINSERT INTO "ar_internal_metadata" ("key", "value", "created_at", "updated_at") VALUES ('schema_sha1', '64ceab756fe9d137e8e37a706bfa640788304a8e', '2026-04-30 08:00:45.031485', '2026-04-30 08:00:45.031485') RETURNING "key"[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.1ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mManufacturer Exists? (0.3ms)[0m  [1m[34mSELECT 1 AS one FROM "manufacturers" WHERE "manufacturers"."name" = ? LIMIT ?[0m  [["name", "Boeing"], ["LIMIT", 1]]
+  [1m[36mManufacturer Create (0.1ms)[0m  [1m[32mINSERT INTO "manufacturers" ("country", "created_at", "name", "updated_at") VALUES (?, ?, ?, ?) RETURNING "id"[0m  [["country", "USA"], ["created_at", "2026-04-30 08:00:45.090402"], ["name", "Boeing"], ["updated_at", "2026-04-30 08:00:45.090402"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mAircraftFamily Exists? (0.1ms)[0m  [1m[34mSELECT 1 AS one FROM "aircraft_families" WHERE "aircraft_families"."name" = ? AND "aircraft_families"."manufacturer_id" = ? LIMIT ?[0m  [["name", "737"], ["manufacturer_id", 1], ["LIMIT", 1]]
+  [1m[36mAircraftFamily Create (0.0ms)[0m  [1m[32mINSERT INTO "aircraft_families" ("created_at", "manufacturer_id", "name", "updated_at") VALUES (?, ?, ?, ?) RETURNING "id"[0m  [["created_at", "2026-04-30 08:00:45.100014"], ["manufacturer_id", 1], ["name", "737"], ["updated_at", "2026-04-30 08:00:45.100014"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Started GET "/manufacturers/1/families" for 127.0.0.1 at 2026-04-30 10:00:45 +0200
+Processing by AircraftFamiliesController#index as JSON
+  Parameters: {"manufacturer_id" => "1"}
+  [1m[36mManufacturer Load (0.1ms)[0m  [1m[34mSELECT "manufacturers".* FROM "manufacturers" WHERE "manufacturers"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mAircraftFamily Load (0.1ms)[0m  [1m[34mSELECT "aircraft_families".* FROM "aircraft_families" WHERE "aircraft_families"."manufacturer_id" = ?[0m  [["manufacturer_id", 1]]
+Completed 200 OK in 9ms (Views: 2.2ms | ActiveRecord: 0.1ms (2 queries, 0 cached) | GC: 0.0ms)
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mManufacturer Exists? (0.1ms)[0m  [1m[34mSELECT 1 AS one FROM "manufacturers" WHERE "manufacturers"."name" = ? LIMIT ?[0m  [["name", "Boeing"], ["LIMIT", 1]]
+  [1m[36mManufacturer Create (0.0ms)[0m  [1m[32mINSERT INTO "manufacturers" ("country", "created_at", "name", "updated_at") VALUES (?, ?, ?, ?) RETURNING "id"[0m  [["country", "USA"], ["created_at", "2026-04-30 08:00:45.151248"], ["name", "Boeing"], ["updated_at", "2026-04-30 08:00:45.151248"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Started POST "/manufacturers/1/families" for 127.0.0.1 at 2026-04-30 10:00:45 +0200
+Processing by AircraftFamiliesController#create as JSON
+  Parameters: {"aircraft_family" => {"name" => "A320"}, "manufacturer_id" => "1"}
+  [1m[36mManufacturer Load (0.0ms)[0m  [1m[34mSELECT "manufacturers".* FROM "manufacturers" WHERE "manufacturers"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mAircraftFamily Exists? (0.1ms)[0m  [1m[34mSELECT 1 AS one FROM "aircraft_families" WHERE "aircraft_families"."name" = ? AND "aircraft_families"."manufacturer_id" = ? LIMIT ?[0m  [["name", "A320"], ["manufacturer_id", 1], ["LIMIT", 1]]
+  [1m[36mAircraftFamily Create (0.0ms)[0m  [1m[32mINSERT INTO "aircraft_families" ("created_at", "manufacturer_id", "name", "updated_at") VALUES (?, ?, ?, ?) RETURNING "id"[0m  [["created_at", "2026-04-30 08:00:45.152761"], ["manufacturer_id", 1], ["name", "A320"], ["updated_at", "2026-04-30 08:00:45.152761"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Completed 201 Created in 1ms (Views: 0.1ms | ActiveRecord: 0.1ms (3 queries, 0 cached) | GC: 0.0ms)
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mManufacturer Exists? (0.0ms)[0m  [1m[34mSELECT 1 AS one FROM "manufacturers" WHERE "manufacturers"."name" = ? LIMIT ?[0m  [["name", "Boeing"], ["LIMIT", 1]]
+  [1m[36mManufacturer Create (0.0ms)[0m  [1m[32mINSERT INTO "manufacturers" ("country", "created_at", "name", "updated_at") VALUES (?, ?, ?, ?) RETURNING "id"[0m  [["country", "USA"], ["created_at", "2026-04-30 08:00:45.154621"], ["name", "Boeing"], ["updated_at", "2026-04-30 08:00:45.154621"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Started POST "/manufacturers/1/families" for 127.0.0.1 at 2026-04-30 10:00:45 +0200
+Processing by AircraftFamiliesController#create as JSON
+  Parameters: {"aircraft_family" => {"name" => ""}, "manufacturer_id" => "1"}
+  [1m[36mManufacturer Load (0.0ms)[0m  [1m[34mSELECT "manufacturers".* FROM "manufacturers" WHERE "manufacturers"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mAircraftFamily Exists? (0.1ms)[0m  [1m[34mSELECT 1 AS one FROM "aircraft_families" WHERE "aircraft_families"."name" = ? AND "aircraft_families"."manufacturer_id" = ? LIMIT ?[0m  [["name", ""], ["manufacturer_id", 1], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TO SAVEPOINT active_record_1[0m
+Completed 422 Unprocessable Content in 2ms (Views: 1.1ms | ActiveRecord: 0.1ms (2 queries, 0 cached) | GC: 0.0ms)
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mManufacturer Exists? (0.1ms)[0m  [1m[34mSELECT 1 AS one FROM "manufacturers" WHERE "manufacturers"."name" = ? LIMIT ?[0m  [["name", "Boeing"], ["LIMIT", 1]]
+  [1m[36mManufacturer Create (0.0ms)[0m  [1m[32mINSERT INTO "manufacturers" ("country", "created_at", "name", "updated_at") VALUES (?, ?, ?, ?) RETURNING "id"[0m  [["country", "USA"], ["created_at", "2026-04-30 08:00:45.158318"], ["name", "Boeing"], ["updated_at", "2026-04-30 08:00:45.158318"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mAircraftFamily Exists? (0.1ms)[0m  [1m[34mSELECT 1 AS one FROM "aircraft_families" WHERE "aircraft_families"."name" = ? AND "aircraft_families"."manufacturer_id" = ? LIMIT ?[0m  [["name", "737"], ["manufacturer_id", 1], ["LIMIT", 1]]
+  [1m[36mAircraftFamily Create (0.0ms)[0m  [1m[32mINSERT INTO "aircraft_families" ("created_at", "manufacturer_id", "name", "updated_at") VALUES (?, ?, ?, ?) RETURNING "id"[0m  [["created_at", "2026-04-30 08:00:45.158929"], ["manufacturer_id", 1], ["name", "737"], ["updated_at", "2026-04-30 08:00:45.158929"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Started GET "/families/1" for 127.0.0.1 at 2026-04-30 10:00:45 +0200
+Processing by AircraftFamiliesController#show as JSON
+  Parameters: {"id" => "1"}
+  [1m[36mAircraftFamily Load (0.0ms)[0m  [1m[34mSELECT "aircraft_families".* FROM "aircraft_families" WHERE "aircraft_families"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+Completed 200 OK in 0ms (Views: 0.1ms | ActiveRecord: 0.0ms (1 query, 0 cached) | GC: 0.0ms)
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mManufacturer Exists? (0.1ms)[0m  [1m[34mSELECT 1 AS one FROM "manufacturers" WHERE "manufacturers"."name" = ? LIMIT ?[0m  [["name", "Boeing"], ["LIMIT", 1]]
+  [1m[36mManufacturer Create (0.0ms)[0m  [1m[32mINSERT INTO "manufacturers" ("country", "created_at", "name", "updated_at") VALUES (?, ?, ?, ?) RETURNING "id"[0m  [["country", "USA"], ["created_at", "2026-04-30 08:00:45.161036"], ["name", "Boeing"], ["updated_at", "2026-04-30 08:00:45.161036"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Started GET "/families/0" for 127.0.0.1 at 2026-04-30 10:00:45 +0200
+Processing by AircraftFamiliesController#show as JSON
+  Parameters: {"id" => "0"}
+  [1m[36mAircraftFamily Load (0.0ms)[0m  [1m[34mSELECT "aircraft_families".* FROM "aircraft_families" WHERE "aircraft_families"."id" = ? LIMIT ?[0m  [["id", 0], ["LIMIT", 1]]
+Completed 404 Not Found in 0ms (ActiveRecord: 0.0ms (1 query, 0 cached) | GC: 0.0ms)
+  
+ActiveRecord::RecordNotFound (Couldn't find AircraftFamily with 'id'="0"):
+  
+app/controllers/aircraft_families_controller.rb:42:in 'AircraftFamiliesController#set_family'
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mManufacturer Exists? (0.1ms)[0m  [1m[34mSELECT 1 AS one FROM "manufacturers" WHERE "manufacturers"."name" = ? LIMIT ?[0m  [["name", "Boeing"], ["LIMIT", 1]]
+  [1m[36mManufacturer Create (0.0ms)[0m  [1m[32mINSERT INTO "manufacturers" ("country", "created_at", "name", "updated_at") VALUES (?, ?, ?, ?) RETURNING "id"[0m  [["country", "USA"], ["created_at", "2026-04-30 08:00:45.163690"], ["name", "Boeing"], ["updated_at", "2026-04-30 08:00:45.163690"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mAircraftFamily Exists? (0.1ms)[0m  [1m[34mSELECT 1 AS one FROM "aircraft_families" WHERE "aircraft_families"."name" = ? AND "aircraft_families"."manufacturer_id" = ? LIMIT ?[0m  [["name", "737"], ["manufacturer_id", 1], ["LIMIT", 1]]
+  [1m[36mAircraftFamily Create (0.0ms)[0m  [1m[32mINSERT INTO "aircraft_families" ("created_at", "manufacturer_id", "name", "updated_at") VALUES (?, ?, ?, ?) RETURNING "id"[0m  [["created_at", "2026-04-30 08:00:45.164136"], ["manufacturer_id", 1], ["name", "737"], ["updated_at", "2026-04-30 08:00:45.164136"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Started PUT "/families/1" for 127.0.0.1 at 2026-04-30 10:00:45 +0200
+Processing by AircraftFamiliesController#update as JSON
+  Parameters: {"aircraft_family" => {"name" => "737 MAX"}, "id" => "1"}
+  [1m[36mAircraftFamily Load (0.0ms)[0m  [1m[34mSELECT "aircraft_families".* FROM "aircraft_families" WHERE "aircraft_families"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mAircraftFamily Exists? (0.0ms)[0m  [1m[34mSELECT 1 AS one FROM "aircraft_families" WHERE "aircraft_families"."name" = ? AND "aircraft_families"."id" != ? AND "aircraft_families"."manufacturer_id" = ? LIMIT ?[0m  [["name", "737 MAX"], ["id", 1], ["manufacturer_id", 1], ["LIMIT", 1]]
+  [1m[36mAircraftFamily Update (0.0ms)[0m  [1m[33mUPDATE "aircraft_families" SET "name" = ?, "updated_at" = ? WHERE "aircraft_families"."id" = ?[0m  [["name", "737 MAX"], ["updated_at", "2026-04-30 08:00:45.165031"], ["id", 1]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Completed 200 OK in 1ms (Views: 0.0ms | ActiveRecord: 0.1ms (3 queries, 0 cached) | GC: 0.0ms)
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mManufacturer Exists? (0.1ms)[0m  [1m[34mSELECT 1 AS one FROM "manufacturers" WHERE "manufacturers"."name" = ? LIMIT ?[0m  [["name", "Boeing"], ["LIMIT", 1]]
+  [1m[36mManufacturer Create (0.0ms)[0m  [1m[32mINSERT INTO "manufacturers" ("country", "created_at", "name", "updated_at") VALUES (?, ?, ?, ?) RETURNING "id"[0m  [["country", "USA"], ["created_at", "2026-04-30 08:00:45.166342"], ["name", "Boeing"], ["updated_at", "2026-04-30 08:00:45.166342"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mAircraftFamily Exists? (0.0ms)[0m  [1m[34mSELECT 1 AS one FROM "aircraft_families" WHERE "aircraft_families"."name" = ? AND "aircraft_families"."manufacturer_id" = ? LIMIT ?[0m  [["name", "737"], ["manufacturer_id", 1], ["LIMIT", 1]]
+  [1m[36mAircraftFamily Create (0.0ms)[0m  [1m[32mINSERT INTO "aircraft_families" ("created_at", "manufacturer_id", "name", "updated_at") VALUES (?, ?, ?, ?) RETURNING "id"[0m  [["created_at", "2026-04-30 08:00:45.166699"], ["manufacturer_id", 1], ["name", "737"], ["updated_at", "2026-04-30 08:00:45.166699"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Started PUT "/families/1" for 127.0.0.1 at 2026-04-30 10:00:45 +0200
+Processing by AircraftFamiliesController#update as JSON
+  Parameters: {"aircraft_family" => {"name" => ""}, "id" => "1"}
+  [1m[36mAircraftFamily Load (0.0ms)[0m  [1m[34mSELECT "aircraft_families".* FROM "aircraft_families" WHERE "aircraft_families"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mAircraftFamily Exists? (0.0ms)[0m  [1m[34mSELECT 1 AS one FROM "aircraft_families" WHERE "aircraft_families"."name" = ? AND "aircraft_families"."id" != ? AND "aircraft_families"."manufacturer_id" = ? LIMIT ?[0m  [["name", ""], ["id", 1], ["manufacturer_id", 1], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TO SAVEPOINT active_record_1[0m
+Completed 422 Unprocessable Content in 1ms (Views: 0.1ms | ActiveRecord: 0.1ms (2 queries, 0 cached) | GC: 0.1ms)
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mManufacturer Exists? (0.0ms)[0m  [1m[34mSELECT 1 AS one FROM "manufacturers" WHERE "manufacturers"."name" = ? LIMIT ?[0m  [["name", "Boeing"], ["LIMIT", 1]]
+  [1m[36mManufacturer Create (0.1ms)[0m  [1m[32mINSERT INTO "manufacturers" ("country", "created_at", "name", "updated_at") VALUES (?, ?, ?, ?) RETURNING "id"[0m  [["country", "USA"], ["created_at", "2026-04-30 08:00:45.168794"], ["name", "Boeing"], ["updated_at", "2026-04-30 08:00:45.168794"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mAircraftFamily Exists? (0.1ms)[0m  [1m[34mSELECT 1 AS one FROM "aircraft_families" WHERE "aircraft_families"."name" = ? AND "aircraft_families"."manufacturer_id" = ? LIMIT ?[0m  [["name", "737"], ["manufacturer_id", 1], ["LIMIT", 1]]
+  [1m[36mAircraftFamily Create (0.0ms)[0m  [1m[32mINSERT INTO "aircraft_families" ("created_at", "manufacturer_id", "name", "updated_at") VALUES (?, ?, ?, ?) RETURNING "id"[0m  [["created_at", "2026-04-30 08:00:45.169587"], ["manufacturer_id", 1], ["name", "737"], ["updated_at", "2026-04-30 08:00:45.169587"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Started DELETE "/families/1" for 127.0.0.1 at 2026-04-30 10:00:45 +0200
+Processing by AircraftFamiliesController#destroy as HTML
+  Parameters: {"id" => "1"}
+  [1m[36mAircraftFamily Load (0.0ms)[0m  [1m[34mSELECT "aircraft_families".* FROM "aircraft_families" WHERE "aircraft_families"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mAircraftVariant Load (0.0ms)[0m  [1m[34mSELECT "aircraft_variants".* FROM "aircraft_variants" WHERE "aircraft_variants"."aircraft_family_id" = ?[0m  [["aircraft_family_id", 1]]
+  [1m[36mAircraftFamily Destroy (0.0ms)[0m  [1m[31mDELETE FROM "aircraft_families" WHERE "aircraft_families"."id" = ?[0m  [["id", 1]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Completed 204 No Content in 3ms (ActiveRecord: 0.3ms (3 queries, 0 cached) | GC: 0.0ms)
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mManufacturer Exists? (0.1ms)[0m  [1m[34mSELECT 1 AS one FROM "manufacturers" WHERE "manufacturers"."name" = ? LIMIT ?[0m  [["name", "Boeing"], ["LIMIT", 1]]
+  [1m[36mManufacturer Create (0.0ms)[0m  [1m[32mINSERT INTO "manufacturers" ("country", "created_at", "name", "updated_at") VALUES (?, ?, ?, ?) RETURNING "id"[0m  [["country", "USA"], ["created_at", "2026-04-30 08:00:45.178542"], ["name", "Boeing"], ["updated_at", "2026-04-30 08:00:45.178542"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mAircraftFamily Exists? (0.0ms)[0m  [1m[34mSELECT 1 AS one FROM "aircraft_families" WHERE "aircraft_families"."name" = ? AND "aircraft_families"."manufacturer_id" = ? LIMIT ?[0m  [["name", "737"], ["manufacturer_id", 1], ["LIMIT", 1]]
+  [1m[36mAircraftFamily Create (0.0ms)[0m  [1m[32mINSERT INTO "aircraft_families" ("created_at", "manufacturer_id", "name", "updated_at") VALUES (?, ?, ?, ?) RETURNING "id"[0m  [["created_at", "2026-04-30 08:00:45.179048"], ["manufacturer_id", 1], ["name", "737"], ["updated_at", "2026-04-30 08:00:45.179048"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mAircraftVariant Create (0.1ms)[0m  [1m[32mINSERT INTO "aircraft_variants" ("aircraft_family_id", "body_type", "created_at", "engine_type", "entry_into_service", "iata_code", "max_cargo_tonnes", "max_passengers", "name", "range_category", "range_km", "status", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING "id"[0m  [["aircraft_family_id", 1], ["body_type", "narrowbody"], ["created_at", "2026-04-30 08:00:45.180886"], ["engine_type", "turbofan"], ["entry_into_service", "1998-04-22"], ["iata_code", "738"], ["max_cargo_tonnes", 21.3], ["max_passengers", 189], ["name", "737-800"], ["range_category", "medium"], ["range_km", 5765], ["status", "active"], ["updated_at", "2026-04-30 08:00:45.180886"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Started GET "/families/1/variants" for 127.0.0.1 at 2026-04-30 10:00:45 +0200
+Processing by AircraftVariantsController#nested_index as JSON
+  Parameters: {"family_id" => "1"}
+  [1m[36mAircraftFamily Load (0.0ms)[0m  [1m[34mSELECT "aircraft_families".* FROM "aircraft_families" WHERE "aircraft_families"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mAircraftVariant Load (0.0ms)[0m  [1m[34mSELECT "aircraft_variants".* FROM "aircraft_variants" WHERE "aircraft_variants"."aircraft_family_id" = ?[0m  [["aircraft_family_id", 1]]
+Completed 200 OK in 1ms (Views: 0.4ms | ActiveRecord: 0.0ms (2 queries, 0 cached) | GC: 0.0ms)
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mManufacturer Exists? (0.1ms)[0m  [1m[34mSELECT 1 AS one FROM "manufacturers" WHERE "manufacturers"."name" = ? LIMIT ?[0m  [["name", "Boeing"], ["LIMIT", 1]]
+  [1m[36mManufacturer Create (0.0ms)[0m  [1m[32mINSERT INTO "manufacturers" ("country", "created_at", "name", "updated_at") VALUES (?, ?, ?, ?) RETURNING "id"[0m  [["country", "USA"], ["created_at", "2026-04-30 08:00:45.184670"], ["name", "Boeing"], ["updated_at", "2026-04-30 08:00:45.184670"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mAircraftFamily Exists? (0.0ms)[0m  [1m[34mSELECT 1 AS one FROM "aircraft_families" WHERE "aircraft_families"."name" = ? AND "aircraft_families"."manufacturer_id" = ? LIMIT ?[0m  [["name", "737"], ["manufacturer_id", 1], ["LIMIT", 1]]
+  [1m[36mAircraftFamily Create (0.0ms)[0m  [1m[32mINSERT INTO "aircraft_families" ("created_at", "manufacturer_id", "name", "updated_at") VALUES (?, ?, ?, ?) RETURNING "id"[0m  [["created_at", "2026-04-30 08:00:45.185117"], ["manufacturer_id", 1], ["name", "737"], ["updated_at", "2026-04-30 08:00:45.185117"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Started POST "/families/1/variants" for 127.0.0.1 at 2026-04-30 10:00:45 +0200
+Processing by AircraftVariantsController#create as JSON
+  Parameters: {"aircraft_variant" => {"name" => "737-800", "iata_code" => "738", "engine_type" => "turbofan", "body_type" => "narrowbody", "range_category" => "medium", "range_km" => 5765, "max_passengers" => 189, "max_cargo_tonnes" => 21.3, "entry_into_service" => "1998-04-22", "status" => "active"}, "family_id" => "1"}
+  [1m[36mAircraftFamily Load (0.0ms)[0m  [1m[34mSELECT "aircraft_families".* FROM "aircraft_families" WHERE "aircraft_families"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mAircraftVariant Create (0.1ms)[0m  [1m[32mINSERT INTO "aircraft_variants" ("aircraft_family_id", "body_type", "created_at", "engine_type", "entry_into_service", "iata_code", "max_cargo_tonnes", "max_passengers", "name", "range_category", "range_km", "status", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING "id"[0m  [["aircraft_family_id", 1], ["body_type", "narrowbody"], ["created_at", "2026-04-30 08:00:45.186133"], ["engine_type", "turbofan"], ["entry_into_service", "1998-04-22"], ["iata_code", "738"], ["max_cargo_tonnes", 21.3], ["max_passengers", 189], ["name", "737-800"], ["range_category", "medium"], ["range_km", 5765], ["status", "active"], ["updated_at", "2026-04-30 08:00:45.186133"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Completed 201 Created in 1ms (Views: 0.1ms | ActiveRecord: 0.1ms (2 queries, 0 cached) | GC: 0.0ms)
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mManufacturer Exists? (0.1ms)[0m  [1m[34mSELECT 1 AS one FROM "manufacturers" WHERE "manufacturers"."name" = ? LIMIT ?[0m  [["name", "Boeing"], ["LIMIT", 1]]
+  [1m[36mManufacturer Create (0.0ms)[0m  [1m[32mINSERT INTO "manufacturers" ("country", "created_at", "name", "updated_at") VALUES (?, ?, ?, ?) RETURNING "id"[0m  [["country", "USA"], ["created_at", "2026-04-30 08:00:45.187859"], ["name", "Boeing"], ["updated_at", "2026-04-30 08:00:45.187859"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mAircraftFamily Exists? (0.0ms)[0m  [1m[34mSELECT 1 AS one FROM "aircraft_families" WHERE "aircraft_families"."name" = ? AND "aircraft_families"."manufacturer_id" = ? LIMIT ?[0m  [["name", "737"], ["manufacturer_id", 1], ["LIMIT", 1]]
+  [1m[36mAircraftFamily Create (0.0ms)[0m  [1m[32mINSERT INTO "aircraft_families" ("created_at", "manufacturer_id", "name", "updated_at") VALUES (?, ?, ?, ?) RETURNING "id"[0m  [["created_at", "2026-04-30 08:00:45.188287"], ["manufacturer_id", 1], ["name", "737"], ["updated_at", "2026-04-30 08:00:45.188287"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Started POST "/families/1/variants" for 127.0.0.1 at 2026-04-30 10:00:45 +0200
+Processing by AircraftVariantsController#create as JSON
+  Parameters: {"aircraft_variant" => {"name" => ""}, "family_id" => "1"}
+  [1m[36mAircraftFamily Load (0.0ms)[0m  [1m[34mSELECT "aircraft_families".* FROM "aircraft_families" WHERE "aircraft_families"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+Completed 422 Unprocessable Content in 1ms (Views: 0.5ms | ActiveRecord: 0.0ms (1 query, 0 cached) | GC: 0.0ms)
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mManufacturer Exists? (0.1ms)[0m  [1m[34mSELECT 1 AS one FROM "manufacturers" WHERE "manufacturers"."name" = ? LIMIT ?[0m  [["name", "Boeing"], ["LIMIT", 1]]
+  [1m[36mManufacturer Create (0.0ms)[0m  [1m[32mINSERT INTO "manufacturers" ("country", "created_at", "name", "updated_at") VALUES (?, ?, ?, ?) RETURNING "id"[0m  [["country", "USA"], ["created_at", "2026-04-30 08:00:45.190918"], ["name", "Boeing"], ["updated_at", "2026-04-30 08:00:45.190918"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mAircraftFamily Exists? (0.0ms)[0m  [1m[34mSELECT 1 AS one FROM "aircraft_families" WHERE "aircraft_families"."name" = ? AND "aircraft_families"."manufacturer_id" = ? LIMIT ?[0m  [["name", "737"], ["manufacturer_id", 1], ["LIMIT", 1]]
+  [1m[36mAircraftFamily Create (0.0ms)[0m  [1m[32mINSERT INTO "aircraft_families" ("created_at", "manufacturer_id", "name", "updated_at") VALUES (?, ?, ?, ?) RETURNING "id"[0m  [["created_at", "2026-04-30 08:00:45.191295"], ["manufacturer_id", 1], ["name", "737"], ["updated_at", "2026-04-30 08:00:45.191295"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mAircraftVariant Create (0.0ms)[0m  [1m[32mINSERT INTO "aircraft_variants" ("aircraft_family_id", "body_type", "created_at", "engine_type", "entry_into_service", "iata_code", "max_cargo_tonnes", "max_passengers", "name", "range_category", "range_km", "status", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING "id"[0m  [["aircraft_family_id", 1], ["body_type", "narrowbody"], ["created_at", "2026-04-30 08:00:45.191553"], ["engine_type", "turbofan"], ["entry_into_service", "1998-04-22"], ["iata_code", "738"], ["max_cargo_tonnes", 21.3], ["max_passengers", 189], ["name", "737-800"], ["range_category", "medium"], ["range_km", 5765], ["status", "active"], ["updated_at", "2026-04-30 08:00:45.191553"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Started GET "/variants?status=" for 127.0.0.1 at 2026-04-30 10:00:45 +0200
+Processing by AircraftVariantsController#index as JSON
+  Parameters: {"status" => ""}
+  [1m[36mAircraftVariant Load (0.0ms)[0m  [1m[34mSELECT "aircraft_variants".* FROM "aircraft_variants"[0m
+Completed 200 OK in 0ms (Views: 0.2ms | ActiveRecord: 0.0ms (1 query, 0 cached) | GC: 0.0ms)
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mManufacturer Exists? (0.1ms)[0m  [1m[34mSELECT 1 AS one FROM "manufacturers" WHERE "manufacturers"."name" = ? LIMIT ?[0m  [["name", "Boeing"], ["LIMIT", 1]]
+  [1m[36mManufacturer Create (0.0ms)[0m  [1m[32mINSERT INTO "manufacturers" ("country", "created_at", "name", "updated_at") VALUES (?, ?, ?, ?) RETURNING "id"[0m  [["country", "USA"], ["created_at", "2026-04-30 08:00:45.194047"], ["name", "Boeing"], ["updated_at", "2026-04-30 08:00:45.194047"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mAircraftFamily Exists? (0.1ms)[0m  [1m[34mSELECT 1 AS one FROM "aircraft_families" WHERE "aircraft_families"."name" = ? AND "aircraft_families"."manufacturer_id" = ? LIMIT ?[0m  [["name", "737"], ["manufacturer_id", 1], ["LIMIT", 1]]
+  [1m[36mAircraftFamily Create (0.0ms)[0m  [1m[32mINSERT INTO "aircraft_families" ("created_at", "manufacturer_id", "name", "updated_at") VALUES (?, ?, ?, ?) RETURNING "id"[0m  [["created_at", "2026-04-30 08:00:45.194511"], ["manufacturer_id", 1], ["name", "737"], ["updated_at", "2026-04-30 08:00:45.194511"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mAircraftVariant Create (0.1ms)[0m  [1m[32mINSERT INTO "aircraft_variants" ("aircraft_family_id", "body_type", "created_at", "engine_type", "entry_into_service", "iata_code", "max_cargo_tonnes", "max_passengers", "name", "range_category", "range_km", "status", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING "id"[0m  [["aircraft_family_id", 1], ["body_type", "narrowbody"], ["created_at", "2026-04-30 08:00:45.194844"], ["engine_type", "turbofan"], ["entry_into_service", "1998-04-22"], ["iata_code", "738"], ["max_cargo_tonnes", 21.3], ["max_passengers", 189], ["name", "737-800"], ["range_category", "medium"], ["range_km", 5765], ["status", "active"], ["updated_at", "2026-04-30 08:00:45.194844"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Started GET "/variants/1" for 127.0.0.1 at 2026-04-30 10:00:45 +0200
+Processing by AircraftVariantsController#show as JSON
+  Parameters: {"id" => "1"}
+  [1m[36mAircraftVariant Load (0.0ms)[0m  [1m[34mSELECT "aircraft_variants".* FROM "aircraft_variants" WHERE "aircraft_variants"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+Completed 200 OK in 0ms (Views: 0.1ms | ActiveRecord: 0.0ms (1 query, 0 cached) | GC: 0.0ms)
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mManufacturer Exists? (0.1ms)[0m  [1m[34mSELECT 1 AS one FROM "manufacturers" WHERE "manufacturers"."name" = ? LIMIT ?[0m  [["name", "Boeing"], ["LIMIT", 1]]
+  [1m[36mManufacturer Create (0.0ms)[0m  [1m[32mINSERT INTO "manufacturers" ("country", "created_at", "name", "updated_at") VALUES (?, ?, ?, ?) RETURNING "id"[0m  [["country", "USA"], ["created_at", "2026-04-30 08:00:45.196613"], ["name", "Boeing"], ["updated_at", "2026-04-30 08:00:45.196613"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mAircraftFamily Exists? (0.1ms)[0m  [1m[34mSELECT 1 AS one FROM "aircraft_families" WHERE "aircraft_families"."name" = ? AND "aircraft_families"."manufacturer_id" = ? LIMIT ?[0m  [["name", "737"], ["manufacturer_id", 1], ["LIMIT", 1]]
+  [1m[36mAircraftFamily Create (0.0ms)[0m  [1m[32mINSERT INTO "aircraft_families" ("created_at", "manufacturer_id", "name", "updated_at") VALUES (?, ?, ?, ?) RETURNING "id"[0m  [["created_at", "2026-04-30 08:00:45.197063"], ["manufacturer_id", 1], ["name", "737"], ["updated_at", "2026-04-30 08:00:45.197063"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Started GET "/variants/0" for 127.0.0.1 at 2026-04-30 10:00:45 +0200
+Processing by AircraftVariantsController#show as JSON
+  Parameters: {"id" => "0"}
+  [1m[36mAircraftVariant Load (0.0ms)[0m  [1m[34mSELECT "aircraft_variants".* FROM "aircraft_variants" WHERE "aircraft_variants"."id" = ? LIMIT ?[0m  [["id", 0], ["LIMIT", 1]]
+Completed 404 Not Found in 0ms (ActiveRecord: 0.0ms (1 query, 0 cached) | GC: 0.0ms)
+  
+ActiveRecord::RecordNotFound (Couldn't find AircraftVariant with 'id'="0"):
+  
+app/controllers/aircraft_variants_controller.rb:69:in 'AircraftVariantsController#set_variant'
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mManufacturer Exists? (0.0ms)[0m  [1m[34mSELECT 1 AS one FROM "manufacturers" WHERE "manufacturers"."name" = ? LIMIT ?[0m  [["name", "Boeing"], ["LIMIT", 1]]
+  [1m[36mManufacturer Create (0.0ms)[0m  [1m[32mINSERT INTO "manufacturers" ("country", "created_at", "name", "updated_at") VALUES (?, ?, ?, ?) RETURNING "id"[0m  [["country", "USA"], ["created_at", "2026-04-30 08:00:45.199328"], ["name", "Boeing"], ["updated_at", "2026-04-30 08:00:45.199328"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mAircraftFamily Exists? (0.0ms)[0m  [1m[34mSELECT 1 AS one FROM "aircraft_families" WHERE "aircraft_families"."name" = ? AND "aircraft_families"."manufacturer_id" = ? LIMIT ?[0m  [["name", "737"], ["manufacturer_id", 1], ["LIMIT", 1]]
+  [1m[36mAircraftFamily Create (0.0ms)[0m  [1m[32mINSERT INTO "aircraft_families" ("created_at", "manufacturer_id", "name", "updated_at") VALUES (?, ?, ?, ?) RETURNING "id"[0m  [["created_at", "2026-04-30 08:00:45.199685"], ["manufacturer_id", 1], ["name", "737"], ["updated_at", "2026-04-30 08:00:45.199685"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mAircraftVariant Create (0.1ms)[0m  [1m[32mINSERT INTO "aircraft_variants" ("aircraft_family_id", "body_type", "created_at", "engine_type", "entry_into_service", "iata_code", "max_cargo_tonnes", "max_passengers", "name", "range_category", "range_km", "status", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING "id"[0m  [["aircraft_family_id", 1], ["body_type", "narrowbody"], ["created_at", "2026-04-30 08:00:45.199967"], ["engine_type", "turbofan"], ["entry_into_service", "1998-04-22"], ["iata_code", "738"], ["max_cargo_tonnes", 21.3], ["max_passengers", 189], ["name", "737-800"], ["range_category", "medium"], ["range_km", 5765], ["status", "active"], ["updated_at", "2026-04-30 08:00:45.199967"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Started PUT "/variants/1" for 127.0.0.1 at 2026-04-30 10:00:45 +0200
+Processing by AircraftVariantsController#update as JSON
+  Parameters: {"aircraft_variant" => {"max_passengers" => 200}, "id" => "1"}
+  [1m[36mAircraftVariant Load (0.0ms)[0m  [1m[34mSELECT "aircraft_variants".* FROM "aircraft_variants" WHERE "aircraft_variants"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mAircraftVariant Update (0.0ms)[0m  [1m[33mUPDATE "aircraft_variants" SET "max_passengers" = ?, "updated_at" = ? WHERE "aircraft_variants"."id" = ?[0m  [["max_passengers", 200], ["updated_at", "2026-04-30 08:00:45.200784"], ["id", 1]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Completed 200 OK in 1ms (Views: 0.1ms | ActiveRecord: 0.1ms (2 queries, 0 cached) | GC: 0.0ms)
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mManufacturer Exists? (0.0ms)[0m  [1m[34mSELECT 1 AS one FROM "manufacturers" WHERE "manufacturers"."name" = ? LIMIT ?[0m  [["name", "Boeing"], ["LIMIT", 1]]
+  [1m[36mManufacturer Create (0.0ms)[0m  [1m[32mINSERT INTO "manufacturers" ("country", "created_at", "name", "updated_at") VALUES (?, ?, ?, ?) RETURNING "id"[0m  [["country", "USA"], ["created_at", "2026-04-30 08:00:45.202127"], ["name", "Boeing"], ["updated_at", "2026-04-30 08:00:45.202127"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mAircraftFamily Exists? (0.0ms)[0m  [1m[34mSELECT 1 AS one FROM "aircraft_families" WHERE "aircraft_families"."name" = ? AND "aircraft_families"."manufacturer_id" = ? LIMIT ?[0m  [["name", "737"], ["manufacturer_id", 1], ["LIMIT", 1]]
+  [1m[36mAircraftFamily Create (0.0ms)[0m  [1m[32mINSERT INTO "aircraft_families" ("created_at", "manufacturer_id", "name", "updated_at") VALUES (?, ?, ?, ?) RETURNING "id"[0m  [["created_at", "2026-04-30 08:00:45.202508"], ["manufacturer_id", 1], ["name", "737"], ["updated_at", "2026-04-30 08:00:45.202508"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mAircraftVariant Create (0.1ms)[0m  [1m[32mINSERT INTO "aircraft_variants" ("aircraft_family_id", "body_type", "created_at", "engine_type", "entry_into_service", "iata_code", "max_cargo_tonnes", "max_passengers", "name", "range_category", "range_km", "status", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING "id"[0m  [["aircraft_family_id", 1], ["body_type", "narrowbody"], ["created_at", "2026-04-30 08:00:45.202787"], ["engine_type", "turbofan"], ["entry_into_service", "1998-04-22"], ["iata_code", "738"], ["max_cargo_tonnes", 21.3], ["max_passengers", 189], ["name", "737-800"], ["range_category", "medium"], ["range_km", 5765], ["status", "active"], ["updated_at", "2026-04-30 08:00:45.202787"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Started PUT "/variants/1" for 127.0.0.1 at 2026-04-30 10:00:45 +0200
+Processing by AircraftVariantsController#update as JSON
+  Parameters: {"aircraft_variant" => {"name" => ""}, "id" => "1"}
+  [1m[36mAircraftVariant Load (0.0ms)[0m  [1m[34mSELECT "aircraft_variants".* FROM "aircraft_variants" WHERE "aircraft_variants"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+Completed 422 Unprocessable Content in 0ms (Views: 0.1ms | ActiveRecord: 0.0ms (1 query, 0 cached) | GC: 0.0ms)
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mManufacturer Exists? (0.1ms)[0m  [1m[34mSELECT 1 AS one FROM "manufacturers" WHERE "manufacturers"."name" = ? LIMIT ?[0m  [["name", "Boeing"], ["LIMIT", 1]]
+  [1m[36mManufacturer Create (0.0ms)[0m  [1m[32mINSERT INTO "manufacturers" ("country", "created_at", "name", "updated_at") VALUES (?, ?, ?, ?) RETURNING "id"[0m  [["country", "USA"], ["created_at", "2026-04-30 08:00:45.204735"], ["name", "Boeing"], ["updated_at", "2026-04-30 08:00:45.204735"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mAircraftFamily Exists? (0.0ms)[0m  [1m[34mSELECT 1 AS one FROM "aircraft_families" WHERE "aircraft_families"."name" = ? AND "aircraft_families"."manufacturer_id" = ? LIMIT ?[0m  [["name", "737"], ["manufacturer_id", 1], ["LIMIT", 1]]
+  [1m[36mAircraftFamily Create (0.0ms)[0m  [1m[32mINSERT INTO "aircraft_families" ("created_at", "manufacturer_id", "name", "updated_at") VALUES (?, ?, ?, ?) RETURNING "id"[0m  [["created_at", "2026-04-30 08:00:45.205121"], ["manufacturer_id", 1], ["name", "737"], ["updated_at", "2026-04-30 08:00:45.205121"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mAircraftVariant Create (0.1ms)[0m  [1m[32mINSERT INTO "aircraft_variants" ("aircraft_family_id", "body_type", "created_at", "engine_type", "entry_into_service", "iata_code", "max_cargo_tonnes", "max_passengers", "name", "range_category", "range_km", "status", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING "id"[0m  [["aircraft_family_id", 1], ["body_type", "narrowbody"], ["created_at", "2026-04-30 08:00:45.205396"], ["engine_type", "turbofan"], ["entry_into_service", "1998-04-22"], ["iata_code", "738"], ["max_cargo_tonnes", 21.3], ["max_passengers", 189], ["name", "737-800"], ["range_category", "medium"], ["range_km", 5765], ["status", "active"], ["updated_at", "2026-04-30 08:00:45.205396"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Started DELETE "/variants/1" for 127.0.0.1 at 2026-04-30 10:00:45 +0200
+Processing by AircraftVariantsController#destroy as HTML
+  Parameters: {"id" => "1"}
+  [1m[36mAircraftVariant Load (0.0ms)[0m  [1m[34mSELECT "aircraft_variants".* FROM "aircraft_variants" WHERE "aircraft_variants"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mFleetEntry Load (0.0ms)[0m  [1m[34mSELECT "fleet_entries".* FROM "fleet_entries" WHERE "fleet_entries"."aircraft_variant_id" = ?[0m  [["aircraft_variant_id", 1]]
+  [1m[36mAircraftVariant Destroy (0.0ms)[0m  [1m[31mDELETE FROM "aircraft_variants" WHERE "aircraft_variants"."id" = ?[0m  [["id", 1]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Completed 204 No Content in 2ms (ActiveRecord: 0.2ms (3 queries, 0 cached) | GC: 0.0ms)
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mManufacturer Exists? (0.1ms)[0m  [1m[34mSELECT 1 AS one FROM "manufacturers" WHERE "manufacturers"."name" = ? LIMIT ?[0m  [["name", "Boeing"], ["LIMIT", 1]]
+  [1m[36mManufacturer Create (0.0ms)[0m  [1m[32mINSERT INTO "manufacturers" ("country", "created_at", "name", "updated_at") VALUES (?, ?, ?, ?) RETURNING "id"[0m  [["country", "USA"], ["created_at", "2026-04-30 08:00:45.208871"], ["name", "Boeing"], ["updated_at", "2026-04-30 08:00:45.208871"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mAircraftFamily Exists? (0.0ms)[0m  [1m[34mSELECT 1 AS one FROM "aircraft_families" WHERE "aircraft_families"."name" = ? AND "aircraft_families"."manufacturer_id" = ? LIMIT ?[0m  [["name", "737"], ["manufacturer_id", 1], ["LIMIT", 1]]
+  [1m[36mAircraftFamily Create (0.0ms)[0m  [1m[32mINSERT INTO "aircraft_families" ("created_at", "manufacturer_id", "name", "updated_at") VALUES (?, ?, ?, ?) RETURNING "id"[0m  [["created_at", "2026-04-30 08:00:45.209307"], ["manufacturer_id", 1], ["name", "737"], ["updated_at", "2026-04-30 08:00:45.209307"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mAircraftVariant Create (0.1ms)[0m  [1m[32mINSERT INTO "aircraft_variants" ("aircraft_family_id", "body_type", "created_at", "engine_type", "entry_into_service", "iata_code", "max_cargo_tonnes", "max_passengers", "name", "range_category", "range_km", "status", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING "id"[0m  [["aircraft_family_id", 1], ["body_type", "narrowbody"], ["created_at", "2026-04-30 08:00:45.209668"], ["engine_type", "turbofan"], ["entry_into_service", "1998-04-22"], ["iata_code", "738"], ["max_cargo_tonnes", 21.3], ["max_passengers", 189], ["name", "737-800"], ["range_category", "medium"], ["range_km", 5765], ["status", "active"], ["updated_at", "2026-04-30 08:00:45.209668"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Started POST "/variants/1/discontinue" for 127.0.0.1 at 2026-04-30 10:00:45 +0200
+Processing by AircraftVariantsController#discontinue as JSON
+  Parameters: {"id" => "1"}
+  [1m[36mAircraftVariant Load (0.0ms)[0m  [1m[34mSELECT "aircraft_variants".* FROM "aircraft_variants" WHERE "aircraft_variants"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mAircraftVariant Update (0.1ms)[0m  [1m[33mUPDATE "aircraft_variants" SET "status" = ?, "updated_at" = ? WHERE "aircraft_variants"."id" = ?[0m  [["status", "discontinued"], ["updated_at", "2026-04-30 08:00:45.210760"], ["id", 1]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Completed 200 OK in 1ms (Views: 0.1ms | ActiveRecord: 0.1ms (2 queries, 0 cached) | GC: 0.0ms)
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mManufacturer Exists? (0.1ms)[0m  [1m[34mSELECT 1 AS one FROM "manufacturers" WHERE "manufacturers"."name" = ? LIMIT ?[0m  [["name", "Boeing"], ["LIMIT", 1]]
+  [1m[36mManufacturer Create (0.0ms)[0m  [1m[32mINSERT INTO "manufacturers" ("country", "created_at", "name", "updated_at") VALUES (?, ?, ?, ?) RETURNING "id"[0m  [["country", "USA"], ["created_at", "2026-04-30 08:00:45.212529"], ["name", "Boeing"], ["updated_at", "2026-04-30 08:00:45.212529"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mAircraftFamily Exists? (0.0ms)[0m  [1m[34mSELECT 1 AS one FROM "aircraft_families" WHERE "aircraft_families"."name" = ? AND "aircraft_families"."manufacturer_id" = ? LIMIT ?[0m  [["name", "737"], ["manufacturer_id", 1], ["LIMIT", 1]]
+  [1m[36mAircraftFamily Create (0.0ms)[0m  [1m[32mINSERT INTO "aircraft_families" ("created_at", "manufacturer_id", "name", "updated_at") VALUES (?, ?, ?, ?) RETURNING "id"[0m  [["created_at", "2026-04-30 08:00:45.212909"], ["manufacturer_id", 1], ["name", "737"], ["updated_at", "2026-04-30 08:00:45.212909"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mAircraftVariant Create (0.1ms)[0m  [1m[32mINSERT INTO "aircraft_variants" ("aircraft_family_id", "body_type", "created_at", "engine_type", "entry_into_service", "iata_code", "max_cargo_tonnes", "max_passengers", "name", "range_category", "range_km", "status", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING "id"[0m  [["aircraft_family_id", 1], ["body_type", "narrowbody"], ["created_at", "2026-04-30 08:00:45.213186"], ["engine_type", "turbofan"], ["entry_into_service", "1998-04-22"], ["iata_code", "738"], ["max_cargo_tonnes", 21.3], ["max_passengers", 189], ["name", "737-800"], ["range_category", "medium"], ["range_km", 5765], ["status", "active"], ["updated_at", "2026-04-30 08:00:45.213186"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Started GET "/variants/1/operators" for 127.0.0.1 at 2026-04-30 10:00:45 +0200
+Processing by AircraftVariantsController#operators as JSON
+  Parameters: {"id" => "1"}
+  [1m[36mAircraftVariant Load (0.1ms)[0m  [1m[34mSELECT "aircraft_variants".* FROM "aircraft_variants" WHERE "aircraft_variants"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mAirline Load (0.0ms)[0m  [1m[34mSELECT "airlines".* FROM "airlines" INNER JOIN "fleet_entries" ON "airlines"."id" = "fleet_entries"."airline_id" WHERE "fleet_entries"."aircraft_variant_id" = ?[0m  [["aircraft_variant_id", 1]]
+Completed 200 OK in 6ms (Views: 2.5ms | ActiveRecord: 0.2ms (2 queries, 0 cached) | GC: 0.0ms)
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mAirline Exists? (0.1ms)[0m  [1m[34mSELECT 1 AS one FROM "airlines" WHERE "airlines"."iata_code" = ? LIMIT ?[0m  [["iata_code", "FR"], ["LIMIT", 1]]
+  [1m[36mAirline Create (0.0ms)[0m  [1m[32mINSERT INTO "airlines" ("country", "created_at", "iata_code", "name", "updated_at") VALUES (?, ?, ?, ?, ?) RETURNING "id"[0m  [["country", "Ireland"], ["created_at", "2026-04-30 08:00:45.222381"], ["iata_code", "FR"], ["name", "Ryanair"], ["updated_at", "2026-04-30 08:00:45.222381"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Started GET "/airlines" for 127.0.0.1 at 2026-04-30 10:00:45 +0200
+Processing by AirlinesController#index as JSON
+  [1m[36mAirline Load (0.0ms)[0m  [1m[34mSELECT "airlines".* FROM "airlines"[0m
+Completed 200 OK in 0ms (Views: 0.2ms | ActiveRecord: 0.0ms (1 query, 0 cached) | GC: 0.0ms)
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+Started POST "/airlines" for 127.0.0.1 at 2026-04-30 10:00:45 +0200
+Processing by AirlinesController#create as JSON
+  Parameters: {"airline" => {"name" => "Lufthansa", "iata_code" => "LH", "country" => "Germany"}}
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mAirline Exists? (0.1ms)[0m  [1m[34mSELECT 1 AS one FROM "airlines" WHERE "airlines"."iata_code" = ? LIMIT ?[0m  [["iata_code", "LH"], ["LIMIT", 1]]
+  [1m[36mAirline Create (0.0ms)[0m  [1m[32mINSERT INTO "airlines" ("country", "created_at", "iata_code", "name", "updated_at") VALUES (?, ?, ?, ?, ?) RETURNING "id"[0m  [["country", "Germany"], ["created_at", "2026-04-30 08:00:45.225854"], ["iata_code", "LH"], ["name", "Lufthansa"], ["updated_at", "2026-04-30 08:00:45.225854"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Completed 201 Created in 1ms (Views: 0.0ms | ActiveRecord: 0.1ms (2 queries, 0 cached) | GC: 0.0ms)
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+Started POST "/airlines" for 127.0.0.1 at 2026-04-30 10:00:45 +0200
+Processing by AirlinesController#create as JSON
+  Parameters: {"airline" => {"name" => "", "iata_code" => "", "country" => ""}}
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mAirline Exists? (0.1ms)[0m  [1m[34mSELECT 1 AS one FROM "airlines" WHERE "airlines"."iata_code" = ? LIMIT ?[0m  [["iata_code", ""], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TO SAVEPOINT active_record_1[0m
+Completed 422 Unprocessable Content in 1ms (Views: 0.3ms | ActiveRecord: 0.1ms (1 query, 0 cached) | GC: 0.0ms)
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mAirline Exists? (0.1ms)[0m  [1m[34mSELECT 1 AS one FROM "airlines" WHERE "airlines"."iata_code" = ? LIMIT ?[0m  [["iata_code", "EK"], ["LIMIT", 1]]
+  [1m[36mAirline Create (0.0ms)[0m  [1m[32mINSERT INTO "airlines" ("country", "created_at", "iata_code", "name", "updated_at") VALUES (?, ?, ?, ?, ?) RETURNING "id"[0m  [["country", "UAE"], ["created_at", "2026-04-30 08:00:45.229277"], ["iata_code", "EK"], ["name", "Emirates"], ["updated_at", "2026-04-30 08:00:45.229277"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Started GET "/airlines/1" for 127.0.0.1 at 2026-04-30 10:00:45 +0200
+Processing by AirlinesController#show as JSON
+  Parameters: {"id" => "1"}
+  [1m[36mAirline Load (0.0ms)[0m  [1m[34mSELECT "airlines".* FROM "airlines" WHERE "airlines"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+Completed 200 OK in 0ms (Views: 0.0ms | ActiveRecord: 0.0ms (1 query, 0 cached) | GC: 0.0ms)
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+Started GET "/airlines/0" for 127.0.0.1 at 2026-04-30 10:00:45 +0200
+Processing by AirlinesController#show as JSON
+  Parameters: {"id" => "0"}
+  [1m[36mAirline Load (0.0ms)[0m  [1m[34mSELECT "airlines".* FROM "airlines" WHERE "airlines"."id" = ? LIMIT ?[0m  [["id", 0], ["LIMIT", 1]]
+Completed 404 Not Found in 0ms (ActiveRecord: 0.0ms (1 query, 0 cached) | GC: 0.0ms)
+  
+ActiveRecord::RecordNotFound (Couldn't find Airline with 'id'="0"):
+  
+app/controllers/airlines_controller.rb:45:in 'AirlinesController#set_airline'
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mAirline Exists? (0.1ms)[0m  [1m[34mSELECT 1 AS one FROM "airlines" WHERE "airlines"."iata_code" = ? LIMIT ?[0m  [["iata_code", "EK"], ["LIMIT", 1]]
+  [1m[36mAirline Create (0.0ms)[0m  [1m[32mINSERT INTO "airlines" ("country", "created_at", "iata_code", "name", "updated_at") VALUES (?, ?, ?, ?, ?) RETURNING "id"[0m  [["country", "UAE"], ["created_at", "2026-04-30 08:00:45.233039"], ["iata_code", "EK"], ["name", "Emirates"], ["updated_at", "2026-04-30 08:00:45.233039"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Started PUT "/airlines/1" for 127.0.0.1 at 2026-04-30 10:00:45 +0200
+Processing by AirlinesController#update as JSON
+  Parameters: {"airline" => {"name" => "Emirates Airlines"}, "id" => "1"}
+  [1m[36mAirline Load (0.0ms)[0m  [1m[34mSELECT "airlines".* FROM "airlines" WHERE "airlines"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mAirline Exists? (0.0ms)[0m  [1m[34mSELECT 1 AS one FROM "airlines" WHERE "airlines"."iata_code" = ? AND "airlines"."id" != ? LIMIT ?[0m  [["iata_code", "EK"], ["id", 1], ["LIMIT", 1]]
+  [1m[36mAirline Update (0.0ms)[0m  [1m[33mUPDATE "airlines" SET "name" = ?, "updated_at" = ? WHERE "airlines"."id" = ?[0m  [["name", "Emirates Airlines"], ["updated_at", "2026-04-30 08:00:45.233910"], ["id", 1]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Completed 200 OK in 1ms (Views: 0.0ms | ActiveRecord: 0.1ms (3 queries, 0 cached) | GC: 0.0ms)
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mAirline Exists? (0.0ms)[0m  [1m[34mSELECT 1 AS one FROM "airlines" WHERE "airlines"."iata_code" = ? LIMIT ?[0m  [["iata_code", "EK"], ["LIMIT", 1]]
+  [1m[36mAirline Create (0.0ms)[0m  [1m[32mINSERT INTO "airlines" ("country", "created_at", "iata_code", "name", "updated_at") VALUES (?, ?, ?, ?, ?) RETURNING "id"[0m  [["country", "UAE"], ["created_at", "2026-04-30 08:00:45.236143"], ["iata_code", "EK"], ["name", "Emirates"], ["updated_at", "2026-04-30 08:00:45.236143"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Started PUT "/airlines/1" for 127.0.0.1 at 2026-04-30 10:00:45 +0200
+Processing by AirlinesController#update as JSON
+  Parameters: {"airline" => {"name" => ""}, "id" => "1"}
+  [1m[36mAirline Load (0.0ms)[0m  [1m[34mSELECT "airlines".* FROM "airlines" WHERE "airlines"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mAirline Exists? (0.1ms)[0m  [1m[34mSELECT 1 AS one FROM "airlines" WHERE "airlines"."iata_code" = ? AND "airlines"."id" != ? LIMIT ?[0m  [["iata_code", "EK"], ["id", 1], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TO SAVEPOINT active_record_1[0m
+Completed 422 Unprocessable Content in 2ms (Views: 0.1ms | ActiveRecord: 0.1ms (2 queries, 0 cached) | GC: 1.1ms)
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mAirline Exists? (0.1ms)[0m  [1m[34mSELECT 1 AS one FROM "airlines" WHERE "airlines"."iata_code" = ? LIMIT ?[0m  [["iata_code", "EK"], ["LIMIT", 1]]
+  [1m[36mAirline Create (0.0ms)[0m  [1m[32mINSERT INTO "airlines" ("country", "created_at", "iata_code", "name", "updated_at") VALUES (?, ?, ?, ?, ?) RETURNING "id"[0m  [["country", "UAE"], ["created_at", "2026-04-30 08:00:45.242389"], ["iata_code", "EK"], ["name", "Emirates"], ["updated_at", "2026-04-30 08:00:45.242389"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Started DELETE "/airlines/1" for 127.0.0.1 at 2026-04-30 10:00:45 +0200
+Processing by AirlinesController#destroy as HTML
+  Parameters: {"id" => "1"}
+  [1m[36mAirline Load (0.3ms)[0m  [1m[34mSELECT "airlines".* FROM "airlines" WHERE "airlines"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mFleetEntry Load (0.1ms)[0m  [1m[34mSELECT "fleet_entries".* FROM "fleet_entries" WHERE "fleet_entries"."airline_id" = ?[0m  [["airline_id", 1]]
+  [1m[36mAirline Destroy (0.0ms)[0m  [1m[31mDELETE FROM "airlines" WHERE "airlines"."id" = ?[0m  [["id", 1]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Completed 204 No Content in 2ms (ActiveRecord: 0.4ms (3 queries, 0 cached) | GC: 0.9ms)
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mAirline Exists? (0.1ms)[0m  [1m[34mSELECT 1 AS one FROM "airlines" WHERE "airlines"."iata_code" = ? LIMIT ?[0m  [["iata_code", "FR"], ["LIMIT", 1]]
+  [1m[36mAirline Create (0.0ms)[0m  [1m[32mINSERT INTO "airlines" ("country", "created_at", "iata_code", "name", "updated_at") VALUES (?, ?, ?, ?, ?) RETURNING "id"[0m  [["country", "Ireland"], ["created_at", "2026-04-30 08:00:45.246154"], ["iata_code", "FR"], ["name", "Ryanair"], ["updated_at", "2026-04-30 08:00:45.246154"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Started GET "/airlines/1/fleet" for 127.0.0.1 at 2026-04-30 10:00:45 +0200
+Processing by AirlinesController#fleet as JSON
+  Parameters: {"id" => "1"}
+  [1m[36mAirline Load (0.0ms)[0m  [1m[34mSELECT "airlines".* FROM "airlines" WHERE "airlines"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mFleetEntry Load (0.0ms)[0m  [1m[34mSELECT "fleet_entries".* FROM "fleet_entries" WHERE "fleet_entries"."airline_id" = ?[0m  [["airline_id", 1]]
+Completed 200 OK in 1ms (Views: 0.2ms | ActiveRecord: 0.0ms (2 queries, 0 cached) | GC: 0.6ms)
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mManufacturer Exists? (0.1ms)[0m  [1m[34mSELECT 1 AS one FROM "manufacturers" WHERE "manufacturers"."name" = ? LIMIT ?[0m  [["name", "Boeing"], ["LIMIT", 1]]
+  [1m[36mManufacturer Create (0.0ms)[0m  [1m[32mINSERT INTO "manufacturers" ("country", "created_at", "name", "updated_at") VALUES (?, ?, ?, ?) RETURNING "id"[0m  [["country", "USA"], ["created_at", "2026-04-30 08:00:45.251426"], ["name", "Boeing"], ["updated_at", "2026-04-30 08:00:45.251426"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mAircraftFamily Exists? (0.1ms)[0m  [1m[34mSELECT 1 AS one FROM "aircraft_families" WHERE "aircraft_families"."name" = ? AND "aircraft_families"."manufacturer_id" = ? LIMIT ?[0m  [["name", "737"], ["manufacturer_id", 1], ["LIMIT", 1]]
+  [1m[36mAircraftFamily Create (0.0ms)[0m  [1m[32mINSERT INTO "aircraft_families" ("created_at", "manufacturer_id", "name", "updated_at") VALUES (?, ?, ?, ?) RETURNING "id"[0m  [["created_at", "2026-04-30 08:00:45.252954"], ["manufacturer_id", 1], ["name", "737"], ["updated_at", "2026-04-30 08:00:45.252954"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mAircraftVariant Create (0.2ms)[0m  [1m[32mINSERT INTO "aircraft_variants" ("aircraft_family_id", "body_type", "created_at", "engine_type", "entry_into_service", "iata_code", "max_cargo_tonnes", "max_passengers", "name", "range_category", "range_km", "status", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING "id"[0m  [["aircraft_family_id", 1], ["body_type", "narrowbody"], ["created_at", "2026-04-30 08:00:45.253289"], ["engine_type", "turbofan"], ["entry_into_service", "1998-04-22"], ["iata_code", "738"], ["max_cargo_tonnes", 21.3], ["max_passengers", 189], ["name", "737-800"], ["range_category", "medium"], ["range_km", 5765], ["status", "active"], ["updated_at", "2026-04-30 08:00:45.253289"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mAirline Exists? (0.3ms)[0m  [1m[34mSELECT 1 AS one FROM "airlines" WHERE "airlines"."iata_code" = ? LIMIT ?[0m  [["iata_code", "FR"], ["LIMIT", 1]]
+  [1m[36mAirline Create (0.0ms)[0m  [1m[32mINSERT INTO "airlines" ("country", "created_at", "iata_code", "name", "updated_at") VALUES (?, ?, ?, ?, ?) RETURNING "id"[0m  [["country", "Ireland"], ["created_at", "2026-04-30 08:00:45.254218"], ["iata_code", "FR"], ["name", "Ryanair"], ["updated_at", "2026-04-30 08:00:45.254218"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Started POST "/airlines/1/fleet" for 127.0.0.1 at 2026-04-30 10:00:45 +0200
+Processing by FleetEntriesController#create as JSON
+  Parameters: {"fleet_entry" => {"aircraft_variant_id" => 1, "fleet_count" => 50, "avg_age_years" => 5.2, "status" => "active"}, "airline_id" => "1"}
+  [1m[36mAirline Load (0.0ms)[0m  [1m[34mSELECT "airlines".* FROM "airlines" WHERE "airlines"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mAircraftVariant Load (0.4ms)[0m  [1m[34mSELECT "aircraft_variants".* FROM "aircraft_variants" WHERE "aircraft_variants"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mFleetEntry Exists? (0.2ms)[0m  [1m[34mSELECT 1 AS one FROM "fleet_entries" WHERE "fleet_entries"."aircraft_variant_id" = ? AND "fleet_entries"."airline_id" = ? LIMIT ?[0m  [["aircraft_variant_id", 1], ["airline_id", 1], ["LIMIT", 1]]
+  [1m[36mFleetEntry Create (0.0ms)[0m  [1m[32mINSERT INTO "fleet_entries" ("aircraft_variant_id", "airline_id", "avg_age_years", "created_at", "fleet_count", "status", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING "id"[0m  [["aircraft_variant_id", 1], ["airline_id", 1], ["avg_age_years", 5.2], ["created_at", "2026-04-30 08:00:45.262617"], ["fleet_count", 50], ["status", "active"], ["updated_at", "2026-04-30 08:00:45.262617"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Completed 201 Created in 6ms (Views: 0.1ms | ActiveRecord: 0.7ms (4 queries, 0 cached) | GC: 3.6ms)
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mManufacturer Exists? (0.1ms)[0m  [1m[34mSELECT 1 AS one FROM "manufacturers" WHERE "manufacturers"."name" = ? LIMIT ?[0m  [["name", "Boeing"], ["LIMIT", 1]]
+  [1m[36mManufacturer Create (0.0ms)[0m  [1m[32mINSERT INTO "manufacturers" ("country", "created_at", "name", "updated_at") VALUES (?, ?, ?, ?) RETURNING "id"[0m  [["country", "USA"], ["created_at", "2026-04-30 08:00:45.265453"], ["name", "Boeing"], ["updated_at", "2026-04-30 08:00:45.265453"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mAircraftFamily Exists? (0.0ms)[0m  [1m[34mSELECT 1 AS one FROM "aircraft_families" WHERE "aircraft_families"."name" = ? AND "aircraft_families"."manufacturer_id" = ? LIMIT ?[0m  [["name", "737"], ["manufacturer_id", 1], ["LIMIT", 1]]
+  [1m[36mAircraftFamily Create (0.0ms)[0m  [1m[32mINSERT INTO "aircraft_families" ("created_at", "manufacturer_id", "name", "updated_at") VALUES (?, ?, ?, ?) RETURNING "id"[0m  [["created_at", "2026-04-30 08:00:45.265848"], ["manufacturer_id", 1], ["name", "737"], ["updated_at", "2026-04-30 08:00:45.265848"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mAircraftVariant Create (0.4ms)[0m  [1m[32mINSERT INTO "aircraft_variants" ("aircraft_family_id", "body_type", "created_at", "engine_type", "entry_into_service", "iata_code", "max_cargo_tonnes", "max_passengers", "name", "range_category", "range_km", "status", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING "id"[0m  [["aircraft_family_id", 1], ["body_type", "narrowbody"], ["created_at", "2026-04-30 08:00:45.266148"], ["engine_type", "turbofan"], ["entry_into_service", "1998-04-22"], ["iata_code", "738"], ["max_cargo_tonnes", 21.3], ["max_passengers", 189], ["name", "737-800"], ["range_category", "medium"], ["range_km", 5765], ["status", "active"], ["updated_at", "2026-04-30 08:00:45.266148"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mAirline Exists? (0.0ms)[0m  [1m[34mSELECT 1 AS one FROM "airlines" WHERE "airlines"."iata_code" = ? LIMIT ?[0m  [["iata_code", "FR"], ["LIMIT", 1]]
+  [1m[36mAirline Create (0.0ms)[0m  [1m[32mINSERT INTO "airlines" ("country", "created_at", "iata_code", "name", "updated_at") VALUES (?, ?, ?, ?, ?) RETURNING "id"[0m  [["country", "Ireland"], ["created_at", "2026-04-30 08:00:45.266884"], ["iata_code", "FR"], ["name", "Ryanair"], ["updated_at", "2026-04-30 08:00:45.266884"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Started POST "/airlines/1/fleet" for 127.0.0.1 at 2026-04-30 10:00:45 +0200
+Processing by FleetEntriesController#create as JSON
+  Parameters: {"fleet_entry" => {"aircraft_variant_id" => nil, "fleet_count" => nil}, "airline_id" => "1"}
+  [1m[36mAirline Load (0.0ms)[0m  [1m[34mSELECT "airlines".* FROM "airlines" WHERE "airlines"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mFleetEntry Exists? (0.1ms)[0m  [1m[34mSELECT 1 AS one FROM "fleet_entries" WHERE "fleet_entries"."aircraft_variant_id" IS NULL AND "fleet_entries"."airline_id" = ? LIMIT ?[0m  [["airline_id", 1], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TO SAVEPOINT active_record_1[0m
+Completed 422 Unprocessable Content in 1ms (Views: 0.3ms | ActiveRecord: 0.1ms (2 queries, 0 cached) | GC: 0.0ms)
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mManufacturer Exists? (0.0ms)[0m  [1m[34mSELECT 1 AS one FROM "manufacturers" WHERE "manufacturers"."name" = ? LIMIT ?[0m  [["name", "Boeing"], ["LIMIT", 1]]
+  [1m[36mManufacturer Create (0.0ms)[0m  [1m[32mINSERT INTO "manufacturers" ("country", "created_at", "name", "updated_at") VALUES (?, ?, ?, ?) RETURNING "id"[0m  [["country", "USA"], ["created_at", "2026-04-30 08:00:45.269484"], ["name", "Boeing"], ["updated_at", "2026-04-30 08:00:45.269484"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mAircraftFamily Exists? (0.0ms)[0m  [1m[34mSELECT 1 AS one FROM "aircraft_families" WHERE "aircraft_families"."name" = ? AND "aircraft_families"."manufacturer_id" = ? LIMIT ?[0m  [["name", "737"], ["manufacturer_id", 1], ["LIMIT", 1]]
+  [1m[36mAircraftFamily Create (0.0ms)[0m  [1m[32mINSERT INTO "aircraft_families" ("created_at", "manufacturer_id", "name", "updated_at") VALUES (?, ?, ?, ?) RETURNING "id"[0m  [["created_at", "2026-04-30 08:00:45.270057"], ["manufacturer_id", 1], ["name", "737"], ["updated_at", "2026-04-30 08:00:45.270057"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mAircraftVariant Create (0.1ms)[0m  [1m[32mINSERT INTO "aircraft_variants" ("aircraft_family_id", "body_type", "created_at", "engine_type", "entry_into_service", "iata_code", "max_cargo_tonnes", "max_passengers", "name", "range_category", "range_km", "status", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING "id"[0m  [["aircraft_family_id", 1], ["body_type", "narrowbody"], ["created_at", "2026-04-30 08:00:45.270306"], ["engine_type", "turbofan"], ["entry_into_service", "1998-04-22"], ["iata_code", "738"], ["max_cargo_tonnes", 21.3], ["max_passengers", 189], ["name", "737-800"], ["range_category", "medium"], ["range_km", 5765], ["status", "active"], ["updated_at", "2026-04-30 08:00:45.270306"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mAirline Exists? (0.1ms)[0m  [1m[34mSELECT 1 AS one FROM "airlines" WHERE "airlines"."iata_code" = ? LIMIT ?[0m  [["iata_code", "FR"], ["LIMIT", 1]]
+  [1m[36mAirline Create (0.0ms)[0m  [1m[32mINSERT INTO "airlines" ("country", "created_at", "iata_code", "name", "updated_at") VALUES (?, ?, ?, ?, ?) RETURNING "id"[0m  [["country", "Ireland"], ["created_at", "2026-04-30 08:00:45.270788"], ["iata_code", "FR"], ["name", "Ryanair"], ["updated_at", "2026-04-30 08:00:45.270788"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mFleetEntry Exists? (0.1ms)[0m  [1m[34mSELECT 1 AS one FROM "fleet_entries" WHERE "fleet_entries"."aircraft_variant_id" = ? AND "fleet_entries"."airline_id" = ? LIMIT ?[0m  [["aircraft_variant_id", 1], ["airline_id", 1], ["LIMIT", 1]]
+  [1m[36mFleetEntry Create (0.0ms)[0m  [1m[32mINSERT INTO "fleet_entries" ("aircraft_variant_id", "airline_id", "avg_age_years", "created_at", "fleet_count", "status", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING "id"[0m  [["aircraft_variant_id", 1], ["airline_id", 1], ["avg_age_years", 5.2], ["created_at", "2026-04-30 08:00:45.271208"], ["fleet_count", 50], ["status", "active"], ["updated_at", "2026-04-30 08:00:45.271208"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Started PUT "/airlines/1/fleet/1" for 127.0.0.1 at 2026-04-30 10:00:45 +0200
+Processing by FleetEntriesController#update as JSON
+  Parameters: {"fleet_entry" => {"fleet_count" => 75, "avg_age_years" => 6.1}, "airline_id" => "1", "id" => "1"}
+  [1m[36mAirline Load (0.0ms)[0m  [1m[34mSELECT "airlines".* FROM "airlines" WHERE "airlines"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mFleetEntry Load (0.0ms)[0m  [1m[34mSELECT "fleet_entries".* FROM "fleet_entries" WHERE "fleet_entries"."airline_id" = ? AND "fleet_entries"."id" = ? LIMIT ?[0m  [["airline_id", 1], ["id", 1], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mFleetEntry Exists? (0.0ms)[0m  [1m[34mSELECT 1 AS one FROM "fleet_entries" WHERE "fleet_entries"."aircraft_variant_id" = ? AND "fleet_entries"."id" != ? AND "fleet_entries"."airline_id" = ? LIMIT ?[0m  [["aircraft_variant_id", 1], ["id", 1], ["airline_id", 1], ["LIMIT", 1]]
+  [1m[36mFleetEntry Update (0.0ms)[0m  [1m[33mUPDATE "fleet_entries" SET "avg_age_years" = ?, "fleet_count" = ?, "updated_at" = ? WHERE "fleet_entries"."id" = ?[0m  [["avg_age_years", 6.1], ["fleet_count", 75], ["updated_at", "2026-04-30 08:00:45.272767"], ["id", 1]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Completed 200 OK in 1ms (Views: 0.1ms | ActiveRecord: 0.2ms (4 queries, 0 cached) | GC: 0.3ms)
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mManufacturer Exists? (0.0ms)[0m  [1m[34mSELECT 1 AS one FROM "manufacturers" WHERE "manufacturers"."name" = ? LIMIT ?[0m  [["name", "Boeing"], ["LIMIT", 1]]
+  [1m[36mManufacturer Create (0.0ms)[0m  [1m[32mINSERT INTO "manufacturers" ("country", "created_at", "name", "updated_at") VALUES (?, ?, ?, ?) RETURNING "id"[0m  [["country", "USA"], ["created_at", "2026-04-30 08:00:45.274288"], ["name", "Boeing"], ["updated_at", "2026-04-30 08:00:45.274288"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mAircraftFamily Exists? (0.0ms)[0m  [1m[34mSELECT 1 AS one FROM "aircraft_families" WHERE "aircraft_families"."name" = ? AND "aircraft_families"."manufacturer_id" = ? LIMIT ?[0m  [["name", "737"], ["manufacturer_id", 1], ["LIMIT", 1]]
+  [1m[36mAircraftFamily Create (0.0ms)[0m  [1m[32mINSERT INTO "aircraft_families" ("created_at", "manufacturer_id", "name", "updated_at") VALUES (?, ?, ?, ?) RETURNING "id"[0m  [["created_at", "2026-04-30 08:00:45.274671"], ["manufacturer_id", 1], ["name", "737"], ["updated_at", "2026-04-30 08:00:45.274671"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mAircraftVariant Create (0.1ms)[0m  [1m[32mINSERT INTO "aircraft_variants" ("aircraft_family_id", "body_type", "created_at", "engine_type", "entry_into_service", "iata_code", "max_cargo_tonnes", "max_passengers", "name", "range_category", "range_km", "status", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING "id"[0m  [["aircraft_family_id", 1], ["body_type", "narrowbody"], ["created_at", "2026-04-30 08:00:45.274929"], ["engine_type", "turbofan"], ["entry_into_service", "1998-04-22"], ["iata_code", "738"], ["max_cargo_tonnes", 21.3], ["max_passengers", 189], ["name", "737-800"], ["range_category", "medium"], ["range_km", 5765], ["status", "active"], ["updated_at", "2026-04-30 08:00:45.274929"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mAirline Exists? (0.0ms)[0m  [1m[34mSELECT 1 AS one FROM "airlines" WHERE "airlines"."iata_code" = ? LIMIT ?[0m  [["iata_code", "FR"], ["LIMIT", 1]]
+  [1m[36mAirline Create (0.0ms)[0m  [1m[32mINSERT INTO "airlines" ("country", "created_at", "iata_code", "name", "updated_at") VALUES (?, ?, ?, ?, ?) RETURNING "id"[0m  [["country", "Ireland"], ["created_at", "2026-04-30 08:00:45.275328"], ["iata_code", "FR"], ["name", "Ryanair"], ["updated_at", "2026-04-30 08:00:45.275328"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mFleetEntry Exists? (0.0ms)[0m  [1m[34mSELECT 1 AS one FROM "fleet_entries" WHERE "fleet_entries"."aircraft_variant_id" = ? AND "fleet_entries"."airline_id" = ? LIMIT ?[0m  [["aircraft_variant_id", 1], ["airline_id", 1], ["LIMIT", 1]]
+  [1m[36mFleetEntry Create (0.0ms)[0m  [1m[32mINSERT INTO "fleet_entries" ("aircraft_variant_id", "airline_id", "avg_age_years", "created_at", "fleet_count", "status", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING "id"[0m  [["aircraft_variant_id", 1], ["airline_id", 1], ["avg_age_years", 5.2], ["created_at", "2026-04-30 08:00:45.275702"], ["fleet_count", 50], ["status", "active"], ["updated_at", "2026-04-30 08:00:45.275702"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Started PUT "/airlines/1/fleet/1" for 127.0.0.1 at 2026-04-30 10:00:45 +0200
+Processing by FleetEntriesController#update as JSON
+  Parameters: {"fleet_entry" => {"fleet_count" => -1}, "airline_id" => "1", "id" => "1"}
+  [1m[36mAirline Load (0.0ms)[0m  [1m[34mSELECT "airlines".* FROM "airlines" WHERE "airlines"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mFleetEntry Load (0.0ms)[0m  [1m[34mSELECT "fleet_entries".* FROM "fleet_entries" WHERE "fleet_entries"."airline_id" = ? AND "fleet_entries"."id" = ? LIMIT ?[0m  [["airline_id", 1], ["id", 1], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mFleetEntry Exists? (0.1ms)[0m  [1m[34mSELECT 1 AS one FROM "fleet_entries" WHERE "fleet_entries"."aircraft_variant_id" = ? AND "fleet_entries"."id" != ? AND "fleet_entries"."airline_id" = ? LIMIT ?[0m  [["aircraft_variant_id", 1], ["id", 1], ["airline_id", 1], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TO SAVEPOINT active_record_1[0m
+Completed 422 Unprocessable Content in 1ms (Views: 0.1ms | ActiveRecord: 0.1ms (3 queries, 0 cached) | GC: 0.2ms)
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mManufacturer Exists? (0.0ms)[0m  [1m[34mSELECT 1 AS one FROM "manufacturers" WHERE "manufacturers"."name" = ? LIMIT ?[0m  [["name", "Boeing"], ["LIMIT", 1]]
+  [1m[36mManufacturer Create (0.0ms)[0m  [1m[32mINSERT INTO "manufacturers" ("country", "created_at", "name", "updated_at") VALUES (?, ?, ?, ?) RETURNING "id"[0m  [["country", "USA"], ["created_at", "2026-04-30 08:00:45.278145"], ["name", "Boeing"], ["updated_at", "2026-04-30 08:00:45.278145"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mAircraftFamily Exists? (0.0ms)[0m  [1m[34mSELECT 1 AS one FROM "aircraft_families" WHERE "aircraft_families"."name" = ? AND "aircraft_families"."manufacturer_id" = ? LIMIT ?[0m  [["name", "737"], ["manufacturer_id", 1], ["LIMIT", 1]]
+  [1m[36mAircraftFamily Create (0.0ms)[0m  [1m[32mINSERT INTO "aircraft_families" ("created_at", "manufacturer_id", "name", "updated_at") VALUES (?, ?, ?, ?) RETURNING "id"[0m  [["created_at", "2026-04-30 08:00:45.278521"], ["manufacturer_id", 1], ["name", "737"], ["updated_at", "2026-04-30 08:00:45.278521"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mAircraftVariant Create (0.1ms)[0m  [1m[32mINSERT INTO "aircraft_variants" ("aircraft_family_id", "body_type", "created_at", "engine_type", "entry_into_service", "iata_code", "max_cargo_tonnes", "max_passengers", "name", "range_category", "range_km", "status", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING "id"[0m  [["aircraft_family_id", 1], ["body_type", "narrowbody"], ["created_at", "2026-04-30 08:00:45.278766"], ["engine_type", "turbofan"], ["entry_into_service", "1998-04-22"], ["iata_code", "738"], ["max_cargo_tonnes", 21.3], ["max_passengers", 189], ["name", "737-800"], ["range_category", "medium"], ["range_km", 5765], ["status", "active"], ["updated_at", "2026-04-30 08:00:45.278766"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mAirline Exists? (0.0ms)[0m  [1m[34mSELECT 1 AS one FROM "airlines" WHERE "airlines"."iata_code" = ? LIMIT ?[0m  [["iata_code", "FR"], ["LIMIT", 1]]
+  [1m[36mAirline Create (0.0ms)[0m  [1m[32mINSERT INTO "airlines" ("country", "created_at", "iata_code", "name", "updated_at") VALUES (?, ?, ?, ?, ?) RETURNING "id"[0m  [["country", "Ireland"], ["created_at", "2026-04-30 08:00:45.279229"], ["iata_code", "FR"], ["name", "Ryanair"], ["updated_at", "2026-04-30 08:00:45.279229"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mFleetEntry Exists? (0.0ms)[0m  [1m[34mSELECT 1 AS one FROM "fleet_entries" WHERE "fleet_entries"."aircraft_variant_id" = ? AND "fleet_entries"."airline_id" = ? LIMIT ?[0m  [["aircraft_variant_id", 1], ["airline_id", 1], ["LIMIT", 1]]
+  [1m[36mFleetEntry Create (0.0ms)[0m  [1m[32mINSERT INTO "fleet_entries" ("aircraft_variant_id", "airline_id", "avg_age_years", "created_at", "fleet_count", "status", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING "id"[0m  [["aircraft_variant_id", 1], ["airline_id", 1], ["avg_age_years", 5.2], ["created_at", "2026-04-30 08:00:45.279610"], ["fleet_count", 50], ["status", "active"], ["updated_at", "2026-04-30 08:00:45.279610"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Started DELETE "/airlines/1/fleet/1" for 127.0.0.1 at 2026-04-30 10:00:45 +0200
+Processing by FleetEntriesController#destroy as HTML
+  Parameters: {"airline_id" => "1", "id" => "1"}
+  [1m[36mAirline Load (0.0ms)[0m  [1m[34mSELECT "airlines".* FROM "airlines" WHERE "airlines"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mFleetEntry Load (0.0ms)[0m  [1m[34mSELECT "fleet_entries".* FROM "fleet_entries" WHERE "fleet_entries"."airline_id" = ? AND "fleet_entries"."id" = ? LIMIT ?[0m  [["airline_id", 1], ["id", 1], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mFleetEntry Destroy (0.0ms)[0m  [1m[31mDELETE FROM "fleet_entries" WHERE "fleet_entries"."id" = ?[0m  [["id", 1]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Completed 204 No Content in 0ms (ActiveRecord: 0.1ms (3 queries, 0 cached) | GC: 0.0ms)
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mManufacturer Exists? (0.0ms)[0m  [1m[34mSELECT 1 AS one FROM "manufacturers" WHERE "manufacturers"."name" = ? LIMIT ?[0m  [["name", "Boeing"], ["LIMIT", 1]]
+  [1m[36mManufacturer Create (0.0ms)[0m  [1m[32mINSERT INTO "manufacturers" ("country", "created_at", "name", "updated_at") VALUES (?, ?, ?, ?) RETURNING "id"[0m  [["country", "USA"], ["created_at", "2026-04-30 08:00:45.281147"], ["name", "Boeing"], ["updated_at", "2026-04-30 08:00:45.281147"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mAircraftFamily Exists? (0.0ms)[0m  [1m[34mSELECT 1 AS one FROM "aircraft_families" WHERE "aircraft_families"."name" = ? AND "aircraft_families"."manufacturer_id" = ? LIMIT ?[0m  [["name", "737"], ["manufacturer_id", 1], ["LIMIT", 1]]
+  [1m[36mAircraftFamily Create (0.0ms)[0m  [1m[32mINSERT INTO "aircraft_families" ("created_at", "manufacturer_id", "name", "updated_at") VALUES (?, ?, ?, ?) RETURNING "id"[0m  [["created_at", "2026-04-30 08:00:45.281499"], ["manufacturer_id", 1], ["name", "737"], ["updated_at", "2026-04-30 08:00:45.281499"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mAircraftVariant Create (0.1ms)[0m  [1m[32mINSERT INTO "aircraft_variants" ("aircraft_family_id", "body_type", "created_at", "engine_type", "entry_into_service", "iata_code", "max_cargo_tonnes", "max_passengers", "name", "range_category", "range_km", "status", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING "id"[0m  [["aircraft_family_id", 1], ["body_type", "narrowbody"], ["created_at", "2026-04-30 08:00:45.281747"], ["engine_type", "turbofan"], ["entry_into_service", "1998-04-22"], ["iata_code", "738"], ["max_cargo_tonnes", 21.3], ["max_passengers", 189], ["name", "737-800"], ["range_category", "medium"], ["range_km", 5765], ["status", "active"], ["updated_at", "2026-04-30 08:00:45.281747"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mAirline Exists? (0.0ms)[0m  [1m[34mSELECT 1 AS one FROM "airlines" WHERE "airlines"."iata_code" = ? LIMIT ?[0m  [["iata_code", "FR"], ["LIMIT", 1]]
+  [1m[36mAirline Create (0.0ms)[0m  [1m[32mINSERT INTO "airlines" ("country", "created_at", "iata_code", "name", "updated_at") VALUES (?, ?, ?, ?, ?) RETURNING "id"[0m  [["country", "Ireland"], ["created_at", "2026-04-30 08:00:45.282149"], ["iata_code", "FR"], ["name", "Ryanair"], ["updated_at", "2026-04-30 08:00:45.282149"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mFleetEntry Exists? (0.0ms)[0m  [1m[34mSELECT 1 AS one FROM "fleet_entries" WHERE "fleet_entries"."aircraft_variant_id" = ? AND "fleet_entries"."airline_id" = ? LIMIT ?[0m  [["aircraft_variant_id", 1], ["airline_id", 1], ["LIMIT", 1]]
+  [1m[36mFleetEntry Create (0.0ms)[0m  [1m[32mINSERT INTO "fleet_entries" ("aircraft_variant_id", "airline_id", "avg_age_years", "created_at", "fleet_count", "status", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING "id"[0m  [["aircraft_variant_id", 1], ["airline_id", 1], ["avg_age_years", 5.2], ["created_at", "2026-04-30 08:00:45.282519"], ["fleet_count", 50], ["status", "active"], ["updated_at", "2026-04-30 08:00:45.282519"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Started POST "/airlines/1/fleet/1/phase-out" for 127.0.0.1 at 2026-04-30 10:00:45 +0200
+Processing by FleetEntriesController#phase_out as JSON
+  Parameters: {"airline_id" => "1", "id" => "1"}
+  [1m[36mAirline Load (0.0ms)[0m  [1m[34mSELECT "airlines".* FROM "airlines" WHERE "airlines"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mFleetEntry Load (0.0ms)[0m  [1m[34mSELECT "fleet_entries".* FROM "fleet_entries" WHERE "fleet_entries"."airline_id" = ? AND "fleet_entries"."id" = ? LIMIT ?[0m  [["airline_id", 1], ["id", 1], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mFleetEntry Exists? (0.0ms)[0m  [1m[34mSELECT 1 AS one FROM "fleet_entries" WHERE "fleet_entries"."aircraft_variant_id" = ? AND "fleet_entries"."id" != ? AND "fleet_entries"."airline_id" = ? LIMIT ?[0m  [["aircraft_variant_id", 1], ["id", 1], ["airline_id", 1], ["LIMIT", 1]]
+  [1m[36mFleetEntry Update (0.0ms)[0m  [1m[33mUPDATE "fleet_entries" SET "status" = ?, "updated_at" = ? WHERE "fleet_entries"."id" = ?[0m  [["status", "phasing_out"], ["updated_at", "2026-04-30 08:00:45.283414"], ["id", 1]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Completed 200 OK in 1ms (Views: 0.0ms | ActiveRecord: 0.1ms (4 queries, 0 cached) | GC: 0.1ms)
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mManufacturer Exists? (0.0ms)[0m  [1m[34mSELECT 1 AS one FROM "manufacturers" WHERE "manufacturers"."name" = ? LIMIT ?[0m  [["name", "Boeing"], ["LIMIT", 1]]
+  [1m[36mManufacturer Create (0.0ms)[0m  [1m[32mINSERT INTO "manufacturers" ("country", "created_at", "name", "updated_at") VALUES (?, ?, ?, ?) RETURNING "id"[0m  [["country", "USA"], ["created_at", "2026-04-30 08:00:45.285358"], ["name", "Boeing"], ["updated_at", "2026-04-30 08:00:45.285358"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Started GET "/manufacturers" for 127.0.0.1 at 2026-04-30 10:00:45 +0200
+Processing by ManufacturersController#index as JSON
+  [1m[36mManufacturer Load (0.0ms)[0m  [1m[34mSELECT "manufacturers".* FROM "manufacturers"[0m
+Completed 200 OK in 0ms (Views: 0.2ms | ActiveRecord: 0.0ms (1 query, 0 cached) | GC: 0.0ms)
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+Started POST "/manufacturers" for 127.0.0.1 at 2026-04-30 10:00:45 +0200
+Processing by ManufacturersController#create as JSON
+  Parameters: {"manufacturer" => {"name" => "Airbus", "country" => "France"}}
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mManufacturer Exists? (0.1ms)[0m  [1m[34mSELECT 1 AS one FROM "manufacturers" WHERE "manufacturers"."name" = ? LIMIT ?[0m  [["name", "Airbus"], ["LIMIT", 1]]
+  [1m[36mManufacturer Create (0.0ms)[0m  [1m[32mINSERT INTO "manufacturers" ("country", "created_at", "name", "updated_at") VALUES (?, ?, ?, ?) RETURNING "id"[0m  [["country", "France"], ["created_at", "2026-04-30 08:00:45.288426"], ["name", "Airbus"], ["updated_at", "2026-04-30 08:00:45.288426"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Completed 201 Created in 0ms (Views: 0.0ms | ActiveRecord: 0.1ms (2 queries, 0 cached) | GC: 0.0ms)
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+Started POST "/manufacturers" for 127.0.0.1 at 2026-04-30 10:00:45 +0200
+Processing by ManufacturersController#create as JSON
+  Parameters: {"manufacturer" => {"name" => "", "country" => ""}}
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mManufacturer Exists? (0.0ms)[0m  [1m[34mSELECT 1 AS one FROM "manufacturers" WHERE "manufacturers"."name" = ? LIMIT ?[0m  [["name", ""], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TO SAVEPOINT active_record_1[0m
+Completed 422 Unprocessable Content in 0ms (Views: 0.2ms | ActiveRecord: 0.1ms (1 query, 0 cached) | GC: 0.0ms)
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mManufacturer Exists? (0.1ms)[0m  [1m[34mSELECT 1 AS one FROM "manufacturers" WHERE "manufacturers"."name" = ? LIMIT ?[0m  [["name", "Embraer"], ["LIMIT", 1]]
+  [1m[36mManufacturer Create (0.0ms)[0m  [1m[32mINSERT INTO "manufacturers" ("country", "created_at", "name", "updated_at") VALUES (?, ?, ?, ?) RETURNING "id"[0m  [["country", "Brazil"], ["created_at", "2026-04-30 08:00:45.290908"], ["name", "Embraer"], ["updated_at", "2026-04-30 08:00:45.290908"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Started GET "/manufacturers/1" for 127.0.0.1 at 2026-04-30 10:00:45 +0200
+Processing by ManufacturersController#show as JSON
+  Parameters: {"id" => "1"}
+  [1m[36mManufacturer Load (0.0ms)[0m  [1m[34mSELECT "manufacturers".* FROM "manufacturers" WHERE "manufacturers"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+Completed 200 OK in 0ms (Views: 0.0ms | ActiveRecord: 0.0ms (1 query, 0 cached) | GC: 0.0ms)
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+Started GET "/manufacturers/0" for 127.0.0.1 at 2026-04-30 10:00:45 +0200
+Processing by ManufacturersController#show as JSON
+  Parameters: {"id" => "0"}
+  [1m[36mManufacturer Load (0.0ms)[0m  [1m[34mSELECT "manufacturers".* FROM "manufacturers" WHERE "manufacturers"."id" = ? LIMIT ?[0m  [["id", 0], ["LIMIT", 1]]
+Completed 404 Not Found in 0ms (ActiveRecord: 0.0ms (1 query, 0 cached) | GC: 0.0ms)
+  
+ActiveRecord::RecordNotFound (Couldn't find Manufacturer with 'id'="0"):
+  
+app/controllers/manufacturers_controller.rb:39:in 'ManufacturersController#set_manufacturer'
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mManufacturer Exists? (0.1ms)[0m  [1m[34mSELECT 1 AS one FROM "manufacturers" WHERE "manufacturers"."name" = ? LIMIT ?[0m  [["name", "Boeing"], ["LIMIT", 1]]
+  [1m[36mManufacturer Create (0.0ms)[0m  [1m[32mINSERT INTO "manufacturers" ("country", "created_at", "name", "updated_at") VALUES (?, ?, ?, ?) RETURNING "id"[0m  [["country", "USA"], ["created_at", "2026-04-30 08:00:45.294249"], ["name", "Boeing"], ["updated_at", "2026-04-30 08:00:45.294249"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Started PUT "/manufacturers/1" for 127.0.0.1 at 2026-04-30 10:00:45 +0200
+Processing by ManufacturersController#update as JSON
+  Parameters: {"manufacturer" => {"name" => "Boeing Co."}, "id" => "1"}
+  [1m[36mManufacturer Load (0.0ms)[0m  [1m[34mSELECT "manufacturers".* FROM "manufacturers" WHERE "manufacturers"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mManufacturer Exists? (0.0ms)[0m  [1m[34mSELECT 1 AS one FROM "manufacturers" WHERE "manufacturers"."name" = ? AND "manufacturers"."id" != ? LIMIT ?[0m  [["name", "Boeing Co."], ["id", 1], ["LIMIT", 1]]
+  [1m[36mManufacturer Update (0.0ms)[0m  [1m[33mUPDATE "manufacturers" SET "name" = ?, "updated_at" = ? WHERE "manufacturers"."id" = ?[0m  [["name", "Boeing Co."], ["updated_at", "2026-04-30 08:00:45.295020"], ["id", 1]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Completed 200 OK in 1ms (Views: 0.0ms | ActiveRecord: 0.1ms (3 queries, 0 cached) | GC: 0.0ms)
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mManufacturer Exists? (0.1ms)[0m  [1m[34mSELECT 1 AS one FROM "manufacturers" WHERE "manufacturers"."name" = ? LIMIT ?[0m  [["name", "Boeing"], ["LIMIT", 1]]
+  [1m[36mManufacturer Create (0.0ms)[0m  [1m[32mINSERT INTO "manufacturers" ("country", "created_at", "name", "updated_at") VALUES (?, ?, ?, ?) RETURNING "id"[0m  [["country", "USA"], ["created_at", "2026-04-30 08:00:45.296306"], ["name", "Boeing"], ["updated_at", "2026-04-30 08:00:45.296306"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Started PUT "/manufacturers/1" for 127.0.0.1 at 2026-04-30 10:00:45 +0200
+Processing by ManufacturersController#update as JSON
+  Parameters: {"manufacturer" => {"name" => ""}, "id" => "1"}
+  [1m[36mManufacturer Load (0.0ms)[0m  [1m[34mSELECT "manufacturers".* FROM "manufacturers" WHERE "manufacturers"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mManufacturer Exists? (0.0ms)[0m  [1m[34mSELECT 1 AS one FROM "manufacturers" WHERE "manufacturers"."name" = ? AND "manufacturers"."id" != ? LIMIT ?[0m  [["name", ""], ["id", 1], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TO SAVEPOINT active_record_1[0m
+Completed 422 Unprocessable Content in 0ms (Views: 0.1ms | ActiveRecord: 0.1ms (2 queries, 0 cached) | GC: 0.0ms)
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN deferred TRANSACTION[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mManufacturer Exists? (0.0ms)[0m  [1m[34mSELECT 1 AS one FROM "manufacturers" WHERE "manufacturers"."name" = ? LIMIT ?[0m  [["name", "Boeing"], ["LIMIT", 1]]
+  [1m[36mManufacturer Create (0.0ms)[0m  [1m[32mINSERT INTO "manufacturers" ("country", "created_at", "name", "updated_at") VALUES (?, ?, ?, ?) RETURNING "id"[0m  [["country", "USA"], ["created_at", "2026-04-30 08:00:45.297967"], ["name", "Boeing"], ["updated_at", "2026-04-30 08:00:45.297967"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Started DELETE "/manufacturers/1" for 127.0.0.1 at 2026-04-30 10:00:45 +0200
+Processing by ManufacturersController#destroy as HTML
+  Parameters: {"id" => "1"}
+  [1m[36mManufacturer Load (0.0ms)[0m  [1m[34mSELECT "manufacturers".* FROM "manufacturers" WHERE "manufacturers"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mAircraftFamily Load (0.0ms)[0m  [1m[34mSELECT "aircraft_families".* FROM "aircraft_families" WHERE "aircraft_families"."manufacturer_id" = ?[0m  [["manufacturer_id", 1]]
+  [1m[36mManufacturer Destroy (0.0ms)[0m  [1m[31mDELETE FROM "manufacturers" WHERE "manufacturers"."id" = ?[0m  [["id", 1]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Completed 204 No Content in 0ms (ActiveRecord: 0.1ms (3 queries, 0 cached) | GC: 0.0ms)
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK TRANSACTION[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.2ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = ? ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1[0m  [[nil, "schema_sha1"]]
+  [1m[36mActiveRecord::SchemaMigration Load (0.1ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m

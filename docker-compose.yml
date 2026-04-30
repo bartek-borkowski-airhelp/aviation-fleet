@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:18
+    container_name: openapi-svc-postgres
+    environment:
+      POSTGRES_USER: openapi_svc
+      POSTGRES_PASSWORD: openapi_svc
+      POSTGRES_DB: openapi_svc_development
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql
+
+volumes:
+  postgres_data:

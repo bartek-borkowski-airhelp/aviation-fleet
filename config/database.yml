@@ -20,8 +20,7 @@ test:
 
 production:
   primary:
-    <<: *default
-    database: openapi_svc_production
+    url: <%= ENV["DATABASE_URL"] %>
   cache:
     <<: *default
     database: openapi_svc_production_cache

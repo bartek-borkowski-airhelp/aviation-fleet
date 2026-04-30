@@ -23,6 +23,7 @@ RSpec.configure do |config|
         description: 'API for managing aircraft manufacturers, families, variants, airlines, and fleet entries'
       },
       paths: {},
+      security: [ { basicAuth: [] } ],
       servers: [
         {
           url: '{protocol}://{host}',
@@ -187,6 +188,12 @@ RSpec.configure do |config|
             properties: {
               errors: { type: :object }
             }
+          }
+        },
+        securitySchemes: {
+          basicAuth: {
+            type: :http,
+            scheme: :basic
           }
         }
       }

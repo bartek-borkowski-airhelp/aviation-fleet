@@ -17,6 +17,8 @@ paths:
       summary: List families for a manufacturer
       tags:
       - Aircraft Families
+      security:
+      - basicAuth: []
       responses:
         '200':
           description: families found
@@ -30,6 +32,8 @@ paths:
       summary: Create a family under a manufacturer
       tags:
       - Aircraft Families
+      security:
+      - basicAuth: []
       parameters: []
       responses:
         '201':
@@ -60,6 +64,8 @@ paths:
       summary: Retrieve a family
       tags:
       - Aircraft Families
+      security:
+      - basicAuth: []
       responses:
         '200':
           description: family found
@@ -73,6 +79,8 @@ paths:
       summary: Update a family
       tags:
       - Aircraft Families
+      security:
+      - basicAuth: []
       parameters: []
       responses:
         '200':
@@ -96,6 +104,8 @@ paths:
       summary: Delete a family
       tags:
       - Aircraft Families
+      security:
+      - basicAuth: []
       responses:
         '204':
           description: family deleted
@@ -110,6 +120,8 @@ paths:
       summary: List variants for a family
       tags:
       - Aircraft Variants
+      security:
+      - basicAuth: []
       responses:
         '200':
           description: variants found
@@ -123,6 +135,8 @@ paths:
       summary: Create a variant under a family
       tags:
       - Aircraft Variants
+      security:
+      - basicAuth: []
       parameters: []
       responses:
         '201':
@@ -147,6 +161,8 @@ paths:
       summary: Search variants
       tags:
       - Aircraft Variants
+      security:
+      - basicAuth: []
       parameters:
       - name: body_type
         in: query
@@ -221,6 +237,8 @@ paths:
       summary: Retrieve a variant
       tags:
       - Aircraft Variants
+      security:
+      - basicAuth: []
       responses:
         '200':
           description: variant found
@@ -234,6 +252,8 @@ paths:
       summary: Update a variant
       tags:
       - Aircraft Variants
+      security:
+      - basicAuth: []
       parameters: []
       responses:
         '200':
@@ -257,6 +277,8 @@ paths:
       summary: Delete a variant
       tags:
       - Aircraft Variants
+      security:
+      - basicAuth: []
       responses:
         '204':
           description: variant deleted
@@ -271,6 +293,8 @@ paths:
       summary: Discontinue a variant
       tags:
       - Aircraft Variants
+      security:
+      - basicAuth: []
       responses:
         '200':
           description: variant discontinued
@@ -289,6 +313,8 @@ paths:
       summary: List airlines operating this variant
       tags:
       - Aircraft Variants
+      security:
+      - basicAuth: []
       responses:
         '200':
           description: operators found
@@ -303,6 +329,8 @@ paths:
       summary: List airlines
       tags:
       - Airlines
+      security:
+      - basicAuth: []
       parameters:
       - name: country
         in: query
@@ -329,6 +357,8 @@ paths:
       summary: Create an airline
       tags:
       - Airlines
+      security:
+      - basicAuth: []
       parameters: []
       responses:
         '201':
@@ -359,6 +389,8 @@ paths:
       summary: Retrieve an airline
       tags:
       - Airlines
+      security:
+      - basicAuth: []
       responses:
         '200':
           description: airline found
@@ -372,6 +404,8 @@ paths:
       summary: Update an airline
       tags:
       - Airlines
+      security:
+      - basicAuth: []
       parameters: []
       responses:
         '200':
@@ -395,6 +429,8 @@ paths:
       summary: Delete an airline
       tags:
       - Airlines
+      security:
+      - basicAuth: []
       responses:
         '204':
           description: airline deleted
@@ -409,6 +445,8 @@ paths:
       summary: List fleet entries for an airline
       tags:
       - Airlines
+      security:
+      - basicAuth: []
       responses:
         '200':
           description: fleet entries found
@@ -429,6 +467,8 @@ paths:
       summary: Add a variant to fleet
       tags:
       - Fleet Entries
+      security:
+      - basicAuth: []
       parameters: []
       responses:
         '201':
@@ -464,6 +504,8 @@ paths:
       summary: Update a fleet entry
       tags:
       - Fleet Entries
+      security:
+      - basicAuth: []
       parameters: []
       responses:
         '200':
@@ -487,6 +529,8 @@ paths:
       summary: Remove a fleet entry
       tags:
       - Fleet Entries
+      security:
+      - basicAuth: []
       responses:
         '204':
           description: fleet entry deleted
@@ -506,6 +550,8 @@ paths:
       summary: Phase out a fleet entry
       tags:
       - Fleet Entries
+      security:
+      - basicAuth: []
       responses:
         '200':
           description: fleet entry phased out
@@ -518,6 +564,8 @@ paths:
       summary: List manufacturers
       tags:
       - Manufacturers
+      security:
+      - basicAuth: []
       parameters:
       - name: country
         in: query
@@ -538,6 +586,8 @@ paths:
       summary: Create a manufacturer
       tags:
       - Manufacturers
+      security:
+      - basicAuth: []
       parameters: []
       responses:
         '201':
@@ -568,6 +618,8 @@ paths:
       summary: Retrieve a manufacturer
       tags:
       - Manufacturers
+      security:
+      - basicAuth: []
       responses:
         '200':
           description: manufacturer found
@@ -581,6 +633,8 @@ paths:
       summary: Update a manufacturer
       tags:
       - Manufacturers
+      security:
+      - basicAuth: []
       parameters: []
       responses:
         '200':
@@ -604,9 +658,13 @@ paths:
       summary: Delete a manufacturer
       tags:
       - Manufacturers
+      security:
+      - basicAuth: []
       responses:
         '204':
           description: manufacturer deleted
+security:
+- basicAuth: []
 servers:
 - url: "{protocol}://{host}"
   variables:
@@ -906,3 +964,7 @@ components:
       properties:
         errors:
           type: object
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic

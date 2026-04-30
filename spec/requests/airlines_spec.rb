@@ -1,9 +1,12 @@
 require 'swagger_helper'
 
 RSpec.describe 'Airlines', type: :request do
+  let(:Authorization) { ActionController::HttpAuthentication::Basic.encode_credentials(ENV.fetch("API_USERNAME", "admin"), ENV.fetch("API_PASSWORD", "password")) }
+
   path '/airlines' do
     get 'List airlines' do
       tags 'Airlines'
+      security [ { basicAuth: [] } ]
       produces 'application/json'
       parameter name: :country, in: :query, type: :string, required: false, description: 'Filter by country'
       parameter name: :iata_code, in: :query, type: :string, required: false, description: 'Filter by IATA code'
@@ -18,6 +21,7 @@ RSpec.describe 'Airlines', type: :request do
 
     post 'Create an airline' do
       tags 'Airlines'
+      security [ { basicAuth: [] } ]
       consumes 'application/json'
       produces 'application/json'
       parameter name: :airline, in: :body, schema: { '$ref' => '#/components/schemas/AirlineInput' }
@@ -43,6 +47,7 @@ RSpec.describe 'Airlines', type: :request do
 
     get 'Retrieve an airline' do
       tags 'Airlines'
+      security [ { basicAuth: [] } ]
       produces 'application/json'
 
       response '200', 'airline found' do
@@ -60,6 +65,7 @@ RSpec.describe 'Airlines', type: :request do
 
     put 'Update an airline' do
       tags 'Airlines'
+      security [ { basicAuth: [] } ]
       consumes 'application/json'
       produces 'application/json'
       parameter name: :airline, in: :body, schema: { '$ref' => '#/components/schemas/AirlineInput' }
@@ -83,6 +89,7 @@ RSpec.describe 'Airlines', type: :request do
 
     delete 'Delete an airline' do
       tags 'Airlines'
+      security [ { basicAuth: [] } ]
 
       response '204', 'airline deleted' do
         let(:id) { Airline.create!(name: 'Emirates', iata_code: 'EK', country: 'UAE').id }
@@ -96,6 +103,7 @@ RSpec.describe 'Airlines', type: :request do
 
     get 'List fleet entries for an airline' do
       tags 'Airlines'
+      security [ { basicAuth: [] } ]
       produces 'application/json'
 
       response '200', 'fleet entries found' do

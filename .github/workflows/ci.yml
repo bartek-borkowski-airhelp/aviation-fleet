@@ -118,3 +118,4 @@ jobs:
           token: ${{ steps.app-token.outputs.token }}
           repository: bartek-borkowski-airhelp/aviation-fleet-ts-sdk
           event-type: openapi-schema-updated
+          client-payload: '{"sha": "${{ github.sha }}", "ref": "${{ github.ref_name }}"}'

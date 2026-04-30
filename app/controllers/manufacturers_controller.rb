@@ -40,6 +40,6 @@ class ManufacturersController < ApplicationController
   end
 
   def manufacturer_params
-    params.expect(manufacturer: [:name, :country])
+    params.expect(manufacturer: [ :name, :country ])
   end
 end

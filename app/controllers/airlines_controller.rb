@@ -46,6 +46,6 @@ class AirlinesController < ApplicationController
   end
 
   def airline_params
-    params.expect(airline: [:name, :iata_code, :country])
+    params.expect(airline: [ :name, :iata_code, :country ])
   end
 end

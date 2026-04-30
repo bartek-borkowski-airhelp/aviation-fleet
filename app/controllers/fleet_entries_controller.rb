@@ -47,6 +47,6 @@ class FleetEntriesController < ApplicationController
   end
 
   def fleet_entry_params
-    params.expect(fleet_entry: [:aircraft_variant_id, :fleet_count, :avg_age_years, :status])
+    params.expect(fleet_entry: [ :aircraft_variant_id, :fleet_count, :avg_age_years, :status ])
   end
 end

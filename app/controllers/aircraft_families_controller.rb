@@ -43,6 +43,6 @@ class AircraftFamiliesController < ApplicationController
   end
 
   def family_params
-    params.expect(aircraft_family: [:name])
+    params.expect(aircraft_family: [ :name ])
   end
 end
